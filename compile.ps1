@@ -20,5 +20,5 @@ if (Test-Path ".\ghandali_index2.pdf") {
   $pdf = Get-Item ".\ghandali_index2.pdf"
   Write-Host "OK: $($pdf.FullName)  ($($pdf.Length) bytes)"
 } else {
-  Write-Error "PDF not produced. Check Paper\main.log"
+  Write-Error "PDF not produced. Check Paper\ghandali_index2.log"
 }
