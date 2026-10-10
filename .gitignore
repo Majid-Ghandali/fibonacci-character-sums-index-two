@@ -1,0 +1,57 @@
+# Python bytecode and caches
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Local Python environments
+.venv/
+venv/
+env/
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary/checkpoint files
+*.tmp
+*.bak
+checkpoint*.pkl
+checkpoint*.json
+
+# Local reproduced runs are not part of the frozen release
+results/reproduced-*/
+results/reproduced-*
+results/tmp-*/
+results/tmp-*
+
+# LaTeX intermediate files under Paper/
+Paper/*.aux
+Paper/*.bbl
+Paper/*.blg
+Paper/*.log
+Paper/*.out
+Paper/*.spl
+Paper/*.toc
+Paper/*.fls
+Paper/*.fdb_latexmk
+Paper/*.synctex.gz
+Paper/texput.log
+
+# Optional LaTeX build directories, if used
+Paper/aux/
+Paper/build/
+# LaTeX build intermediates for manuscript builds
+texput.log
+
+# Local hold area; never publish
+_local_hold_before_github/
+
+# Ignore loose/local result outputs; keep frozen release evidence
+results/*
+!results/release-v1.0.1/
+!results/release-v1.0.1/**

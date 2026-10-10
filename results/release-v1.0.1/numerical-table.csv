@@ -1,0 +1,9 @@
+category,name,statement,tested,matches,mismatches,status
+THEOREM,thmA_split_idx2_p1mod8_S_eq_delta_astar,"split i_p=2, p=1 mod 8: S=delta_p a*",6551,6551,0,proved-claim-check
+THEOREM,thmA_split_idx2_p5mod8_S_eq_minus_delta,"split i_p=2, p=5 mod 8: S=-delta_p",6583,6583,0,proved-claim-check
+THEOREM,thmB_inert_idx2_p1mod8_abs_S_eq_b,"inert i_p=2, p=1 mod 8: |S|=b",14591,14591,0,proved-claim-check
+THEOREM,thmB_inert_idx2_p1mod8_2S_eq_J5,"inert i_p=2, p=1 mod 8: 2S=Jac(5)",14591,14591,0,proved-claim-check-where-J-computed
+THEOREM,thmB_inert_idx2_p5mod8_S_eq_0,"inert i_p=2, p=5 mod 8: S=0",14696,14696,0,proved-claim-check
+EXPLORATORY,exploratory_inert_idx2_p1mod8_sign_rule_mod5,inert sign rule modulo 5,0,0,0,open-pattern-not-theorem
+EXPLORATORY,exploratory_split_idx4_p5mod8_S_eq_0,"split i_p=4, p=5 mod 8: S=0",6697,6697,0,exploratory
+EXPLORATORY,exploratory_split_idx4_p1mod8_S_odd,"split i_p=4, p=1 mod 8: S odd",3359,3359,0,exploratory

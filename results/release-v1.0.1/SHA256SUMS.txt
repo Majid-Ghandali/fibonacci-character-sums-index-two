@@ -1,0 +1,12 @@
+﻿# SHA-256  release manifest
+# 2026-10-09 15:09:37
+# VERSION 1.0.1
+#
+9ba7285c6309494fc12736613f12417e58e395fe270becd3427d89b367c535c2  ghandali_verify_index2.py
+c190230c13d51ebcf81965d43be30829ad74053cddbec3a292a0aa86e7f49e86  ghandali-index2-records.csv
+36c9578e7bed3e53fef7380ca359f0fea6afdc288d80a058b272037883fb1e1f  numerical-table.csv
+d7fdb1ff586969092a2be9a1828f776271995405f93da695cb663b6344562d3b  numerical-table.tex
+cfad1d6f7bf8a961e14ae9b76cb922b283016f7b60befd7203b039bc07d01d30  rank-index-all-primes.csv
+ab9f31efff313a3dc862057d689d939e404c6db2c7ea7c5724b76c831ef7e59c  verification-run.log
+ceacef5555513cac75d0ce903093ff8e9d729b3637b0358e744bd9b649602b95  verification-summary.json
+6f2769bf72e282762abf7e80ec57655905c1ff7e2672324dc02ddee158c4ec1c  verification-workbook.xlsx

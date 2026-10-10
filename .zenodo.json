@@ -1,0 +1,37 @@
+{
+  "upload_type": "software",
+  "title": "Reproducibility Archive for Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums",
+  "creators": [
+    {
+      "name": "Ghandali, Majid",
+      "affiliation": "Independent Researcher",
+      "orcid": "0009-0001-1097-1770"
+    }
+  ],
+  "description": "Public reproducibility verifier and machine-readable output files for the manuscript \"Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums\". The verifier checks finite-range evidence for rank-index-two Fibonacci character-sum identities and their reductions to Jacobsthal sums, separating theorem-level checks from exploratory checks and density context.",
+  "access_right": "open",
+  "license": "mit",
+  "version": "1.0.1",
+  "publication_date": "2026-10-09",
+  "keywords": [
+    "Fibonacci numbers",
+    "character sums",
+    "Legendre symbol",
+    "rank of apparition",
+    "rank index",
+    "Jacobsthal sums",
+    "Lucas sequences",
+    "quadratic characters",
+    "computational number theory",
+    "reproducibility",
+    "Python"
+  ],
+  "related_identifiers": [
+    {
+      "identifier": "10.5281/zenodo.23264457",
+      "relation": "isSupplementTo",
+      "scheme": "doi",
+      "resource_type": "publication-preprint"
+    }
+  ]
+}

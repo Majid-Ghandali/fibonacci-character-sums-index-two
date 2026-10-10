@@ -1,0 +1,1791 @@
+% =====================================================================
+%  Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums
+%  Author: Majid Ghandali  (ORCID: 0009-0001-1097-1770)
+%  Source of truth: ghandali_index2.tex + ghandali_index2.bib
+%  See README.md for build conventions
+% =====================================================================
+\documentclass[11pt]{amsart}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsthm,mathtools}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+
+% ---------- theorem environments ----------
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{conjecture}[theorem]{Conjecture}
+\newtheorem{mainthm}{Theorem}
+\renewcommand{\themainthm}{\Alph{mainthm}}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{remark}[theorem]{Remark}
+\newtheorem{problem}[theorem]{Problem}
+\newtheorem{observation}[theorem]{Observation}
+
+% ---------- macros ----------
+\newcommand{\Fp}{\mathbb{F}_p}
+\newcommand{\Fpp}{\mathbb{F}_{p^2}}
+\newcommand{\leg}[2]{\left(\frac{#1}{#2}\right)}
+\newcommand{\qleg}[2]{\left(\frac{#1}{#2}\right)_{\!4}}
+\newcommand{\Jac}{\mathcal{J}}
+% Note: previously also defined as \phi_2; kept only the calligraphic form used throughout the text.
+
+\begin{document}
+
+\title[Index-two Fibonacci character sums]{Fibonacci Character Sums at Rank Index Two\\and Jacobsthal Sums}
+
+\author{Majid Ghandali}
+\address{Independent Researcher, Tehran, Iran}
+\email{majid.ghandali@gmail.com}
+\thanks{ORCID: 0009-0001-1097-1770.}
+\date{}
+\subjclass[2020]{11B39, 11A15, 11L10}
+\keywords{Fibonacci numbers, rank of apparition, Legendre symbol, character sums, Jacobsthal sums, sums of two squares, quartic residues}
+
+\begin{abstract}
+Let $p>5$ be prime, let $z(p)$ be the rank of apparition of $p$
+in the Fibonacci sequence, and put
+\[
+  S(p)=\sum_{j=1}^{z(p)}\leg{F_j}{p},
+  \qquad
+  i_p=\frac{p-\leg{5}{p}}{z(p)}.
+\]
+Earlier work of the author evaluates $S(p)$ in the full-rank case
+$i_p=1$.  This paper treats the next layer, namely the rank-index-two
+case $i_p=2$.
+
+We first show that $i_p=2$ forces $p\equiv1\pmod4$.  In the
+$p\equiv1\pmod8$ branches, a change of variables through a primitive
+root in the split case and a Cayley parametrisation of the norm-one
+torus in the inert case reduce $S(p)$ to classical Jacobsthal sums; the
+complementary $p\equiv5\pmod8$ branches are handled by reflection and
+character identities.
+
+Writing
+\[
+  \Jac(c)=\sum_{x\in\mathbb F_p}\leg{x}{p}\leg{x^2+c}{p},
+\]
+we obtain the following explicit laws.  In the split case, with
+\[
+  \delta_p=
+  \begin{cases}
+  1,&p\equiv1\pmod5,\\
+  -1,&p\equiv4\pmod5,
+  \end{cases}
+\]
+and with $p=a^2+b^2$, $a$ odd, $b>0$ even, and
+$a^{*}\in\{\pm a\}$ determined by $a^{*}\equiv1\pmod4$, one has
+\[
+  S(p)=
+  \begin{cases}
+    \delta_p a^{*},&p\equiv1\pmod8,\\
+    -\delta_p,&p\equiv5\pmod8.
+  \end{cases}
+\]
+In the inert case one has
+\[
+  S(p)=
+  \begin{cases}
+    \displaystyle \frac12\Jac(5)\in\{\pm b\},&p\equiv1\pmod8,\\[4pt]
+    0,&p\equiv5\pmod8,
+  \end{cases}
+\]
+and in the first branch the sign is determined by the congruence
+$S(p)\equiv -a^{*}\pmod5$.
+
+A companion verifier checks the theorem-level identities and records
+the numerical data used in the paper; the source code and
+machine-readable outputs are available in the versioned reproducibility
+archive~\cite{ghandaliIndex2Archive}.
+\end{abstract}
+
+\maketitle
+
+% =====================================================================
+\section{Introduction}\label{sec:intro}
+% =====================================================================
+
+\subsection{Setting}
+For a prime $p>5$ let $\chi=\chi_p=\leg{\cdot}{p}$, $\varepsilon_p=\leg5p$,
+$n_p=p-\varepsilon_p$, let $z(p)$ be the rank of apparition of $p$ in $(F_n)$, and
+\[
+  i_p:=\frac{n_p}{z(p)}\in\mathbb Z_{\ge1},\qquad
+  S(p):=\sum_{j=1}^{z(p)}\chi(F_j).
+\]
+Earlier work \cite{Ghandali2026Preprint} --- the \emph{full-rank paper} --- gives an
+explicit evaluation of $S(p)$ for $i_p=1$; for split primes it reads
+$S(p)=\delta_p$, where $\delta_p\in\{\pm1\}$ and
+$\delta_p\equiv p\pmod 5$. The density of the primes with $i_p=1$ is,
+under GRH, a special case of Chen's theorem on primitive points of
+one-dimensional tori \cite{Chen2002}: the total density is Artin's
+constant $A$, with inert and split branches $10A/19$ and $9A/19$
+respectively (see the conditional corollary in \cite{Ghandali2026Preprint}). The
+maximal-order problem for units in real quadratic fields was initiated
+numerically by Ishikawa--Kitaoka \cite{IshikawaKitaoka1998} and settled
+conditionally by Chen--Kitaoka--Yu \cite{ChenKitaokaYu2000} and Roskam
+\cite{Roskam2000}; for the fundamental unit $\varphi$ (rather than the
+norm-one element $\eta=-\varphi^2$), Roskam's inert value is
+$20A/19$. See Lenstra \cite{Lenstra1977} and Murty \cite{Murty1983}
+for the general conditional framework. The present note asks what
+happens one level down, at $i_p=2$.
+
+\subsection{Main results}
+Write $p=a^2+b^2$ with $a$ odd, $b$ even and $b>0$ whenever $p\equiv1\pmod4$, and let
+$a^{*}\in\{\pm a\}$ be determined by $a^{*}\equiv1\pmod4$. Let
+$\Jac(c)=\sum_{x\in\Fp}\chi(x)\chi(x^2+c)$ be the Jacobsthal sum.
+
+\begin{mainthm}[Split primes, index two]\label{thm:A}
+Let $p$ be split ($\varepsilon_p=1$) with $i_p=2$. Then $p\equiv1\pmod4$, and
+\[
+  S(p)=\begin{cases}\delta_p\,a^{*}, & p\equiv1\pmod8,\\[2pt] -\delta_p, & p\equiv5\pmod8.\end{cases}
+\]
+\end{mainthm}
+
+\begin{mainthm}[Inert primes, index two]\label{thm:B}
+Let $p$ be inert, that is $\varepsilon_p=\leg5p=-1$, and suppose
+$i_p=2$. Then $p\equiv1\pmod4$. If $p\equiv5\pmod8$, then
+\[
+  S(p)=0.
+\]
+If $p\equiv1\pmod8$, write
+\[
+  p=(a^{*})^2+b^2,\qquad a^{*}\equiv1\pmod4,\qquad b>0.
+\]
+Then
+\[
+  S(p)=\frac12\Jac(5)=\frac12\Jac(-5),
+\]
+and the sign is given by
+\[
+  S(p)=
+  \begin{cases}
+    -b,& b\equiv a^{*}\pmod5,\\
+    \phantom{-}b,& b\equiv -a^{*}\pmod5.
+  \end{cases}
+\]
+Equivalently, when $p\equiv1\pmod8$, $S(p)$ is the unique element of
+$\{\pm b\}$ congruent to $-a^{*}$ modulo~$5$.
+\end{mainthm}
+
+\begin{proposition}[Reflection vanishing]\label{prop:reflection-vanishing}
+If $z(p)$ is odd, then $p\equiv1\pmod4$. Moreover, if in addition $p\equiv5\pmod8$,
+then $S(p)=0$.
+\end{proposition}
+
+\subsection{What is classical and what is claimed}
+\begin{center}
+\begin{tabular}{@{}p{0.42\textwidth}p{0.32\textwidth}p{0.20\textwidth}@{}}
+\toprule
+Ingredient & Source & Role here\\
+\midrule
+$i_p$ even $\iff p\equiv1\pmod4$ & classical (Lehmer \cite{DHLehmer}) & Lemma~\ref{lem:index-parity}\\
+Jacobsthal: $(\tfrac12\Jac(r))^2+(\tfrac12\Jac(n))^2=p$ & Jacobsthal \cite{Jacobsthal}, \cite{BEW} & input\\
+$\Jac(-1)=\sum\chi(x^3-x)=-2a^{*}$ ($p\equiv1\bmod 8$) & Gauss; \cite[Ch.~6,9]{BEW} & input\\
+$\qleg5p\,\chi(\varphi)=\delta_p$ & elementary lemma; proof supplied here & Lemma~\ref{lem:quartic-unit}\\
+Rank multiplier / reflection & classical (Lucas \cite{Lucas1878}, Somer \cite{Somer1980}); see also \cite{Ghandali2026HalfPeriod} & Lemmas~\ref{lem:multiplier}, \ref{lem:reflection}\\
+Half-Jacobsthal reduction ($p\equiv1\pmod8$, $i_p=2$) & this paper & Props.~\ref{prop:split-red}, \ref{prop:inert-red}\\
+Sign of $\tfrac12\Jac(5)$ via biquadratic reciprocity & classical reciprocity + application here & Lemma~\ref{lem:sign5}, Thm.~\ref{thm:B}\\
+Inert index-two Dirichlet density $=10A/19$ (GRH) & Roskam \cite{Roskam2000} + Chen \cite{Chen2002} + 2-adic dictionary (\S\ref{sec:context}) & Cor.~\ref{cor:inert-index-two-density}\\
+Theorems~\ref{thm:A}, \ref{thm:B} & this paper & main results\\
+Proposition~\ref{prop:reflection-vanishing} & classical; also used in \cite{Ghandali2026HalfPeriod} & structural\\
+\bottomrule
+\end{tabular}
+\end{center}
+\noindent
+The contribution claimed here is the reduction of the Fibonacci
+character sum at rank index two to the specific Jacobsthal sums
+$\Jac(-1)$ and $\Jac(\pm5)$, together with the resulting explicit
+formulas for $S(p)$.  The classical evaluation theory of Jacobsthal
+sums and the relevant reciprocity laws are used as inputs; no new
+general evaluation theory for Jacobsthal sums is claimed.
+We have not located a prior reference recording these particular
+rank-index-two Fibonacci reductions, nor their combination with the
+quartic-reciprocity sign determination in the inert branch.  This is a
+qualified literature statement, not a proof of priority.  The inert Dirichlet
+density $10A/19$ recorded in Corollary~\ref{cor:inert-index-two-density}
+below is derived from the GRH-conditional density theorems of Roskam and
+Chen after translating their statements into the present rank-index
+notation; it is included only as conditional context
+(Remark~\ref{rem:natural-vs-dirichlet}).
+
+\subsection{Organisation}
+Section~\ref{sec:prelim} fixes notation. Section~\ref{sec:struct}
+proves the structural lemmas. Sections~\ref{sec:split}
+and~\ref{sec:inert} prove Theorems~\ref{thm:A} and~\ref{thm:B}.
+Section~\ref{sec:numerics} records the numerical verification of the
+theorem-level identities (including the signed inert law).
+Section~\ref{sec:context} records a GRH-conditional density corollary
+obtained from Roskam's and Chen's density theorems after translating
+their maximal-order statements into the present rank-index notation.
+This conditional discussion is included only for context and is not used
+in the proofs of Theorems~\ref{thm:A} and~\ref{thm:B}.
+Section~\ref{sec:open} records further problems and directions.
+
+% =====================================================================
+\section{Notation and preliminaries}\label{sec:prelim}
+% =====================================================================
+
+Let $\varphi=(1+\sqrt5)/2$, $\psi=(1-\sqrt5)/2$, so $\varphi\psi=-1$ and
+$F_n=(\varphi^n-\psi^n)/(\varphi-\psi)$. Reducing modulo $p$ we regard
+$\varphi,\psi\in\Fp$ if $\varepsilon_p=1$ and $\varphi,\psi\in\Fpp\setminus\Fp$ with
+$\varphi^p=\psi$ if $\varepsilon_p=-1$. Put
+\[
+  \eta:=\varphi/\psi=-\varphi^2 .
+\]
+Then $F_n\equiv0\pmod p\iff\eta^n=1$, so $z(p)=\operatorname{ord}(\eta)$ and
+$\eta^{n_p}=1$.
+
+\begin{definition}
+For $p\equiv1\pmod4$ fix $\iota\in\Fp$ with $\iota^2=-1$; then
+$\chi(\iota)=(-1)^{(p-1)/4}=\leg2p$. For split $p\equiv1\pmod4$ put
+$\qleg5p:=\chi(\varphi-\psi)\equiv5^{(p-1)/4}\pmod p$; this does not depend on the
+choice of square root since $\chi(-1)=1$. For $p\equiv1\pmod8$ write $2=s^2$
+in $\Fp$ and set $\qleg2p:=\chi(s)$; this is the quartic symbol of $2$.
+\end{definition}
+
+\begin{definition}[Jacobsthal sums]\label{def:jacobsthal-sums}
+$\Jac(c):=\sum_{x\in\Fp}\chi(x)\chi(x^2+c)$ for $c\in\Fp^{\times}$.
+\end{definition}
+
+\begin{remark}
+Throughout this paper, the term ``Jacobsthal sum'' refers to the
+classical quadratic character sum
+\[
+  \Jac(c)=\sum_{x\in\Fp}\chi(x)\chi(x^2+c).
+\]
+It is unrelated to the Jacobsthal and Jacobsthal--Lucas recurrence
+sequences commonly denoted by $J_n$ and $j_n$.
+\end{remark}
+
+\begin{lemma}[Jacobsthal]\label{lem:jacobsthal}
+Let $p\equiv1\pmod4$, let $r\in\mathbb F_p^\times$ be a quadratic residue and
+let $n\in\mathbb F_p^\times$ be a quadratic non-residue. Then
+\[
+  \frac12\Jac(r) \text{ is odd},\qquad
+  \frac12\Jac(n) \text{ is even},
+\]
+and
+\[
+  \left(\frac12\Jac(r)\right)^2+
+  \left(\frac12\Jac(n)\right)^2=p.
+\]
+Moreover, for every $c,u\in\mathbb F_p^\times$,
+\[
+  \Jac(cu^2)=\chi(u)\Jac(c).
+\]
+\end{lemma}
+
+\begin{proof}
+The first assertions are the classical theorem of Jacobsthal on the two
+components in the representation of primes $p\equiv1\pmod4$ as a sum of two
+squares; see Jacobsthal \cite{Jacobsthal} or
+Berndt--Evans--Williams \cite[Chapter~6]{BEW}.
+
+For the transformation formula, substitute $x=uy$:
+\[
+\begin{aligned}
+ \Jac(cu^2)
+ &=\sum_{x\in\mathbb F_p}\chi(x)\chi(x^2+cu^2)\\
+ &=\sum_{y\in\mathbb F_p}\chi(uy)\chi(u^2(y^2+c))\\
+ &=\chi(u)\sum_{y\in\mathbb F_p}\chi(y)\chi(y^2+c)\\
+ &=\chi(u)\Jac(c).
+\end{aligned}
+\]
+\end{proof}
+
+\begin{lemma}[Jacobsthal congruence]\label{lem:jac-cong}
+Let $p\equiv1\pmod4$, and write
+\[
+  p=a^2+b^2,\qquad a\ \text{odd},\quad b\ \text{even},
+\]
+with $a^{*}\in\{\pm a\}$ determined by $a^{*}\equiv1\pmod4$.
+Let $c\in\mathbb F_p^\times$, and put $m=(p-1)/2$. Then
+\[
+  \Jac(c)\equiv -\binom{m}{m/2}\,c^{(p-1)/4}\pmod p.
+\]
+By the classical Gauss congruence
+\[
+  \binom{m}{m/2}\equiv 2a^{*}\pmod p,
+\]
+one obtains
+\[
+  \tfrac12\Jac(c)\equiv -a^{*}\,c^{(p-1)/4}\pmod p.
+\]
+In particular, for $p\equiv1\pmod8$,
+\[
+  \Jac(-1)=-2a^{*}.
+\]
+\end{lemma}
+
+\begin{proof}
+Working in $\mathbb F_p$, one has $\chi(x)\equiv x^m$ for all $x\in\mathbb F_p$,
+with both sides equal to $0$ at $x=0$. Hence
+\[
+  \Jac(c)
+  =
+  \sum_{x\in\mathbb F_p}\chi(x)\chi(x^2+c)
+  \equiv
+  \sum_{x\in\mathbb F_p}x^m(x^2+c)^m
+  \pmod p.
+\]
+Expanding the binomial gives
+\[
+  \sum_{k=0}^{m}\binom{m}{k}c^{m-k}
+  \sum_{x\in\mathbb F_p}x^{m+2k}.
+\]
+Using the rule
+\[
+  \sum_{x\in\mathbb F_p}x^e\equiv
+  \begin{cases}
+    -1\pmod p,& (p-1)\mid e,\ e>0,\\
+    0\pmod p,& \text{otherwise},
+  \end{cases}
+\]
+only the middle term $k=m/2$ survives. Therefore
+\[
+  \Jac(c)\equiv
+  -\binom{m}{m/2}c^{m/2}
+  =
+  -\binom{m}{m/2}c^{(p-1)/4}
+  \pmod p.
+\]
+The evaluation of the central binomial coefficient is classical:
+\[
+  \binom{m}{m/2}\equiv 2a^{*}\pmod p;
+\]
+see, for example, Berndt--Evans--Williams~\cite[Chapters~6 and~9]{BEW}.
+Thus
+\[
+  \tfrac12\Jac(c)\equiv -a^{*}\,c^{(p-1)/4}\pmod p.
+\]
+
+Now suppose $p\equiv1\pmod8$ and put $c=-1$. Then
+\[
+  (-1)^{(p-1)/4}=1,
+\]
+so
+\[
+  \tfrac12\Jac(-1)\equiv -a^{*}\pmod p.
+\]
+Since $-1$ is a quadratic residue, Lemma~\ref{lem:jacobsthal} implies that
+$\tfrac12\Jac(-1)$ is the odd component in the representation
+$p=a^2+b^2$. Hence
+\[
+  \tfrac12\Jac(-1)=\pm a^{*}.
+\]
+The congruence modulo $p$ determines the sign. Indeed, $2|a^{*}|<p$ for
+$p>5$, so $a^{*}$ and $-a^{*}$ are not congruent modulo $p$. Therefore
+\[
+  \tfrac12\Jac(-1)=-a^{*},
+\]
+or equivalently
+\[
+  \Jac(-1)=-2a^{*}.
+\]
+\end{proof}
+
+\begin{lemma}\label{lem:Jminus1}
+Let $p\equiv1\pmod8$, and write
+\[
+  p=a^2+b^2,\qquad a\ \text{odd},\quad b\ \text{even},\quad b>0,
+\]
+with $a^{*}\in\{\pm a\}$ determined by $a^{*}\equiv1\pmod4$. Then
+\[
+  \Jac(-1)=\sum_{x\in\mathbb F_p}\chi(x^3-x)=-2a^{*}.
+\]
+\end{lemma}
+
+\begin{proof}
+This is the final assertion of Lemma~\ref{lem:jac-cong}.
+\end{proof}
+
+% =====================================================================
+\section{Structural lemmas}\label{sec:struct}
+% =====================================================================
+
+\begin{lemma}[Parity]\label{lem:parity}
+$S(p)\equiv z(p)-1\pmod 2$.
+\end{lemma}
+\begin{proof}
+For $1\le j<z(p)$ one has $F_j\not\equiv0$, so $\chi(F_j)=\pm1$; and $\chi(F_{z(p)})=0$.
+\end{proof}
+
+\begin{lemma}[Index parity]\label{lem:index-parity}
+$\eta^{n_p/2}=\chi(-1)$. Hence $i_p$ is even if and only if $p\equiv1\pmod4$.
+\end{lemma}
+\begin{proof}
+If $\varepsilon_p=1$: $\eta^{(p-1)/2}=(-1)^{(p-1)/2}\varphi^{p-1}=(-1)^{(p-1)/2}$.
+If $\varepsilon_p=-1$: $\varphi^{p+1}=\varphi\psi=-1$, so
+$\eta^{(p+1)/2}=(-1)^{(p+1)/2}\varphi^{p+1}=(-1)^{(p-1)/2}$. Finally $i_p$ is even
+iff $z(p)\mid n_p/2$ iff $\eta^{n_p/2}=1$.
+\end{proof}
+
+\begin{lemma}[Rank multiplier]\label{lem:multiplier}
+Let $z=z(p)$. Then $F_{z+1}=\varphi^{z}\in\Fp$ and $F_{z+1}^2=(-1)^z$. Consequently
+$\chi(F_{z+1})=1$ if $z$ is even, while if $z$ is odd then $p\equiv1\pmod4$ and
+$\chi(F_{z+1})=\leg2p$.
+\end{lemma}
+\begin{proof}
+$F_z=0$ means $\varphi^z=\psi^z=(-1)^z\varphi^{-z}$, so $\varphi^{2z}=(-1)^z$, and
+$F_{z+1}=(\varphi^{z+1}-\psi^{z+1})/(\varphi-\psi)=\varphi^z$. If $z$ is odd,
+$F_{z+1}^2=-1$ forces $p\equiv1\pmod4$ and $F_{z+1}=\pm\iota$.
+\end{proof}
+
+\begin{lemma}[Reflection]\label{lem:reflection}
+For $0\le j\le z=z(p)$: $F_{z-j}=(-1)^{j+1}F_{z+1}F_j$.
+\end{lemma}
+\begin{proof}
+Using $\psi^z=\varphi^z$ and $\varphi\psi=-1$:
+$\varphi^{z-j}-\psi^{z-j}=\varphi^z(\varphi^{-j}-\psi^{-j})
+=\varphi^z(-1)^{j}(\psi^{j}-\varphi^{j})$; divide by $\varphi-\psi$ and apply
+Lemma~\ref{lem:multiplier}.
+\end{proof}
+
+\begin{proof}[Proof of Proposition~\ref{prop:reflection-vanishing}]
+Let $z=z(p)$ be odd. Since $p$ is odd and
+\[
+  n_p=p-\varepsilon_p
+\]
+is even, the quotient
+\[
+  i_p=\frac{n_p}{z}
+\]
+is even. Hence Lemma~\ref{lem:index-parity} gives $p\equiv1\pmod4$, so
+$\chi(-1)=1$. By Lemma~\ref{lem:reflection}, $j\mapsto z-j$ is a fixed-point-free
+involution of $\{1,\dots,z-1\}$ with
+$\chi(F_{z-j})=\chi(F_{z+1})\chi(F_j)$
+(note that the factor $\chi((-1)^{j+1})$ is absorbed because $\chi(-1)=1$), and
+$\chi(F_z)=0$. Hence $S(p)=\chi(F_{z+1})S(p)$, and Lemma~\ref{lem:multiplier} gives
+$\chi(F_{z+1})=\leg2p$. In particular $S(p)=0$ whenever $\leg2p=-1$, i.e.,
+$p\equiv5\pmod8$.
+\end{proof}
+
+\begin{corollary}\label{cor:vanishing}
+$S(p)=0$ in each of the following cases: (a) $\varepsilon_p=-1$, $i_p=2$,
+$p\equiv5\pmod8$; (b) $\varepsilon_p=1$, $i_p=4$, $p\equiv5\pmod8$.
+\end{corollary}
+\begin{proof}
+In (a) $z=(p+1)/2$ and in (b) $z=(p-1)/4$; both are odd.
+\end{proof}
+
+\begin{lemma}\label{lem:split-index2-chi}
+If $\varepsilon_p=1$ and $i_p=2$, then $\chi(\varphi)=-\leg2p$.
+\end{lemma}
+\begin{proof}
+Here $p\equiv1\pmod4$ and $\operatorname{ord}\eta=(p-1)/2$ is even, so
+$\eta^{(p-1)/4}=-1$. But
+$\eta^{(p-1)/4}=(-1)^{(p-1)/4}\varphi^{(p-1)/2}=\leg2p\chi(\varphi)$.
+\end{proof}
+
+\begin{lemma}[Quartic character of the golden unit]\label{lem:quartic-unit}
+Let $p>5$ be a split prime for $K=\mathbb Q(\sqrt5)$, and suppose
+$p\equiv1\pmod4$. Define
+\[
+  \delta_p=
+  \begin{cases}
+    1,& p\equiv1\pmod5,\\
+    -1,& p\equiv4\pmod5.
+  \end{cases}
+\]
+Then
+\[
+  \qleg5p\,\chi(\varphi)=\delta_p.
+\]
+Equivalently,
+\[
+  \chi(\varphi+2)=\delta_p.
+\]
+\end{lemma}
+
+\begin{proof}
+Since
+\[
+  \varphi(\varphi-\psi)=\varphi\sqrt5=\varphi+2,
+\]
+we have
+\[
+  \qleg5p\,\chi(\varphi)
+  =
+  \chi(\sqrt5)\chi(\varphi)
+  =
+  \chi(\varphi+2).
+\]
+Thus it suffices to determine whether $\varphi+2$ is a square in $\mathbb F_p$.
+
+The element $\varphi-1$ is a root of the quadratic
+\[
+  X^2+X-1=0.
+\]
+Let $\zeta\in\mathbb F_{p^2}$ be a primitive fifth root of unity.
+Since $p\equiv\pm1\pmod5$, Frobenius acts by
+\[
+  \zeta\longmapsto\zeta^p\in\{\zeta,\zeta^{-1}\}.
+\]
+Hence $\zeta+\zeta^{-1}\in\mathbb F_p$, and the two elements
+\[
+  \zeta+\zeta^{-1},
+  \qquad
+  \zeta^2+\zeta^{-2}
+\]
+are precisely the roots $\varphi-1,\psi-1$ of $X^2+X-1$.
+Replacing $\zeta$ by $\zeta^2$ if necessary, we may assume that
+\[
+  \zeta+\zeta^{-1}=\varphi-1.
+\]
+Put
+\[
+  \theta=\zeta-\zeta^{-1}.
+\]
+Then
+\[
+  \theta^2
+  =
+  (\zeta+\zeta^{-1})^2-4
+  =
+  (\varphi-1)^2-4
+  =
+  -(\varphi+2).
+\]
+Because $p\equiv1\pmod4$, $-1$ is a square in $\mathbb F_p$. Hence
+$\varphi+2$ is a square in $\mathbb F_p$ if and only if $\theta^2$ is a square
+in $\mathbb F_p$.
+
+If $p\equiv1\pmod5$, then $\zeta\in\mathbb F_p$, hence
+$\theta\in\mathbb F_p$, and therefore $\theta^2$, and so also $\varphi+2$,
+is a square.
+
+If $p\equiv4\pmod5$, then Frobenius acts on $\zeta$ by
+\[
+  \zeta^p=\zeta^{-1}.
+\]
+Consequently
+\[
+  \theta^p=(\zeta-\zeta^{-1})^p=\zeta^{-1}-\zeta=-\theta.
+\]
+Thus $\theta\notin\mathbb F_p$. Since the only square roots of $\theta^2$ are
+$\pm\theta$, the element $\theta^2$ cannot be a square in $\mathbb F_p$.
+Because $-1$ is a square, $\varphi+2=-\theta^2$ is also a nonsquare.
+
+Therefore
+\[
+  \chi(\varphi+2)=
+  \begin{cases}
+    1,&p\equiv1\pmod5,\\
+    -1,&p\equiv4\pmod5,
+  \end{cases}
+\]
+which is precisely $\delta_p$.
+\end{proof}
+
+% =====================================================================
+\section{The split case}\label{sec:split}
+% =====================================================================
+
+\begin{proposition}[Jacobsthal reduction, split]\label{prop:split-red}
+Let $\varepsilon_p=1$ and $i_p=2$. Then
+\[
+  S(p)=\begin{cases}\qleg5p\cdot\tfrac12\Jac(-1), & p\equiv1\pmod8,\\[2pt] -\qleg5p, & p\equiv5\pmod8.\end{cases}
+\]
+\end{proposition}
+\begin{proof}
+By Lemma~\ref{lem:index-parity}, $p\equiv1\pmod4$, and $z=(p-1)/2$.
+
+\emph{Step 1.} Put $g=\iota\varphi$ and $y_j=g^j$. Since
+$\psi^j=(-1)^j\varphi^{-j}$,
+$F_j=\varphi^{-j}\bigl(\varphi^{2j}-(-1)^j\bigr)/(\varphi-\psi)$. Now
+$y_j^2=(-1)^j\varphi^{2j}$, so $\varphi^{2j}-(-1)^j=(-1)^j(y_j^2-1)$, and
+$\chi(\varphi^{-j})=\chi(\varphi^{j})=\chi(\iota)^j\chi(y_j)$. Therefore
+\[
+  \chi(F_j)=\qleg5p\,\leg2p^{j} f(y_j),\qquad f(y):=\chi(y)\chi(y^2-1).
+\]
+
+\emph{Step 2.} Since $g^2=\eta$ has order $(p-1)/2$ and this order is even,
+$g$ has order $p-1$. Indeed, if $g$ had order $(p-1)/2$, then $g^2$ would
+have order $(p-1)/4$, a contradiction. Thus $g$ is a primitive root.
+Consequently $\{y_j:1\le j\le z\}$ is a half-system of $\mathbb F_p^\times$
+modulo $\pm1$, because $g^{j+z}=-g^j$. Also $f$ is even, since $\chi(-1)=1$.
+
+\emph{Step 3.} If $p\equiv1\pmod 8$, then $\leg2p=1$, so
+$S(p)=\qleg5p\sum_{j=1}^{z}f(y_j)=\qleg5p\cdot\tfrac12\sum_{y\neq0}f(y)
+=\qleg5p\cdot\tfrac12\Jac(-1)$.
+
+If $p\equiv5\pmod8$, then $\leg2p^{j}=(-1)^j=\chi(g^j)$, so
+$S(p)=\qleg5p\sum_{j}\chi(y_j^2-1)=\qleg5p\cdot\tfrac12\sum_{y\ne0}\chi(y^2-1)$.
+Since
+\[
+  \sum_{y\in\Fp}\chi(y^2-1)=-1
+\]
+and $\chi(-1)=1$, we have
+\[
+  \sum_{y\ne0}\chi(y^2-1)=-2.
+\]
+Consequently
+\[
+  S(p)=\qleg5p\cdot\tfrac12(-2)=-\qleg5p.
+\]
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:A}]
+By Lemma~\ref{lem:quartic-unit},
+\[
+  \qleg5p\,\chi(\varphi)=\delta_p.
+\]
+Since $\chi(\varphi)^2=1$, this gives
+\[
+  \qleg5p=\delta_p\chi(\varphi).
+\]
+By Lemma~\ref{lem:split-index2-chi},
+\[
+  \chi(\varphi)=-\leg2p.
+\]
+Therefore
+\[
+  \qleg5p=-\delta_p\leg2p.
+\]
+
+If $p\equiv1\pmod8$, then $\leg2p=1$, so $\qleg5p=-\delta_p$.
+By Proposition~\ref{prop:split-red} and Lemma~\ref{lem:Jminus1},
+\[
+  S(p)=\qleg5p\cdot\frac12\Jac(-1)
+      =(-\delta_p)(-a^{*})
+      =\delta_p a^{*}.
+\]
+
+If $p\equiv5\pmod8$, then $\leg2p=-1$, so $\qleg5p=\delta_p$.
+By Proposition~\ref{prop:split-red},
+\[
+  S(p)=-\qleg5p=-\delta_p.
+\]
+\end{proof}
+
+\begin{corollary}\label{cor:quartic-five}
+If $\varepsilon_p=1$ and $i_p=2$, then $\qleg5p=-\delta_p\leg2p$.
+Equivalently, $5$ is a quartic residue modulo such $p$ if and only if
+$p\equiv9$ or $21\pmod{40}$.
+\end{corollary}
+\begin{proof}
+The first identity was established in the proof of Theorem~\ref{thm:A}; the
+residue classes follow by inspection of the four cases $p\bmod40$.
+\end{proof}
+
+\begin{remark}[Compatibility with a criterion of E.~Lehmer]
+Emma Lehmer~\cite{ELehmer1958} proved that for primes $p\equiv1\pmod4$ with
+$\leg5p=1$ one has $\qleg5p=1$ if and only if $5\mid b$. Combined with
+Corollary~\ref{cor:quartic-five} this yields the consistency check that, for
+split primes with $i_p=2$,
+\[
+  5\mid b\quad\Longleftrightarrow\quad p\equiv9\text{ or }21\pmod{40}.
+\]
+The equivalence has been verified for all such primes below $6\cdot10^4$
+($550$ primes).
+\end{remark}
+
+\begin{remark}[Parity consistency]
+For split $i_p=2$, $z(p)=(p-1)/2$ is even, so $S(p)$ is odd by
+Lemma~\ref{lem:parity}, in accordance with the values $\delta_p a^{*}$ and $-\delta_p$.
+For inert $i_p=2$, $z(p)$ is odd, so $S(p)$ is even, in accordance with
+$\pm b$ and $0$.
+\end{remark}
+
+\begin{remark}
+In terms of residue classes: $S(p)=a^{*}$ for $p\equiv1\pmod{40}$,
+$S(p)=-a^{*}$ for $p\equiv9\pmod{40}$, $S(p)=-1$ for $p\equiv21\pmod{40}$, and
+$S(p)=1$ for $p\equiv29\pmod{40}$. Compare the full-rank law $S(p)=\delta_p$ of
+\cite{Ghandali2026Preprint}. For $i_p=2$ one has
+\[
+  S(p)\equiv \delta_p\leg2p \equiv -\qleg5p \pmod4.
+\]
+A uniform statement covering all indices remains open.
+\end{remark}
+
+% =====================================================================
+\section{The inert case}\label{sec:inert}
+% =====================================================================
+
+Let $\varepsilon_p=-1$. Let $N:\Fpp^{\times}\to\Fp^{\times}$ be the norm and
+$T=\ker N$, a cyclic group of order $p+1$. Put $\sqrt5:=\varphi-\psi$; then
+$(\sqrt5)^p=-\sqrt5$.
+
+\begin{lemma}[Cayley parametrisation]\label{lem:cayley}
+The map $c(t)=(t+\sqrt5)/(t-\sqrt5)$, $c(\infty)=1$, is a bijection
+$\mathbb P^1(\Fp)\to T$ with $c(0)=-1$ and $c(5/t)=-c(t)$. For $t\in\Fp^{\times}$
+\[
+  \frac{c(t)-c(t)^{-1}}{\sqrt5}=\frac{4t}{t^2-5}\in\Fp^{\times}.
+\]
+\end{lemma}
+\begin{proof}
+Standard: $c(t)^p=c(t)^{-1}$, and the inverse is $y\mapsto\sqrt5\,(y+1)/(y-1)$,
+which is Frobenius-fixed. Since $5$ is a non-residue, $t^2\ne5$. The identities
+follow by direct computation.
+\end{proof}
+
+\begin{proposition}[Jacobsthal reduction, inert]\label{prop:inert-red}
+Let $\varepsilon_p=-1$ and $i_p=2$. If $p\equiv1\pmod 8$, then
+\[
+  S(p)=\frac12\Jac(-5)=\frac12\Jac(5).
+\]
+\end{proposition}
+
+\begin{proof}
+Here $p\equiv1\pmod4$ by Lemma~\ref{lem:index-parity}, and
+\[
+  z=z(p)=\frac{p+1}{2}
+\]
+is odd. Put
+\[
+  g=\iota\varphi.
+\]
+Then
+\[
+  N(g)=N(\iota)N(\varphi)=(-1)(-1)=1,
+\]
+so $g\in T$, and
+\[
+  g^2=\eta
+\]
+has order $z$.
+
+With $y_j=g^j$ one has the identities
+\[
+  (-\iota)^j y_j=\varphi^j,\qquad
+  (-\iota)^j y_j^{-1}=(-1)^j\varphi^{-j}=\psi^j,
+\]
+and therefore
+\[
+  F_j=(-\iota)^{j}\,\frac{y_j-y_j^{-1}}{\sqrt5}.
+\]
+(For $y\in T$, the quotient $(y-y^{-1})/\sqrt5$ lies in $\Fp$, because
+Frobenius sends $y-y^{-1}$ to $-(y-y^{-1})$ and sends $\sqrt5$ to $-\sqrt5$.)
+Consequently
+\[
+  \chi(F_j)=\leg2p^{j}\,
+  \chi\!\left(\frac{y_j-y_j^{-1}}{\sqrt5}\right).
+\]
+Since $p\equiv1\pmod8$, we have $\leg2p=1$, so this becomes
+\[
+  \chi(F_j)=
+  \chi\!\left(\frac{y_j-y_j^{-1}}{\sqrt5}\right).
+\]
+
+We next record explicitly how the powers of $g$ sample the norm-one torus.
+Since $g^2=\eta$ has order $z=(p+1)/2$, the order of $g$ is either $z$ or
+$2z=p+1$. In both cases the set
+\[
+  Y=\{g^j:1\le j\le z\}
+\]
+contains exactly one element from each pair $\{y,-y\}$ in $T$.
+
+Indeed, if $\operatorname{ord}(g)=2z$, then $g^z=-1$, and therefore
+\[
+  g^{j+z}=-g^j.
+\]
+Thus the first $z$ powers give one representative from each pair
+$\{y,-y\}$.
+
+If instead $\operatorname{ord}(g)=z$, then $\langle g\rangle$ is the unique
+subgroup of $T$ of order $z$. Since $z$ is odd, this subgroup does not contain
+$-1$. Hence
+\[
+  T=\langle g\rangle\sqcup(-\langle g\rangle),
+\]
+and again $Y=\langle g\rangle$ contains exactly one element from each pair
+$\{y,-y\}$.
+
+Now use the Cayley parametrisation of Lemma~\ref{lem:cayley}. Write
+\[
+  y=c(t)=\frac{t+\sqrt5}{t-\sqrt5}.
+\]
+For $t\in\mathbb F_p^{\times}$, Lemma~\ref{lem:cayley} gives
+\[
+  \frac{c(t)-c(t)^{-1}}{\sqrt5}
+  =
+  \frac{4t}{t^2-5}.
+\]
+Therefore
+\[
+  \chi\!\left(\frac{c(t)-c(t)^{-1}}{\sqrt5}\right)
+  =
+  \chi(t)\chi(t^2-5).
+\]
+Put
+\[
+  f(t):=\chi(t)\chi(t^2-5).
+\]
+
+The involution $y\mapsto -y$ on $T$ corresponds, under the Cayley
+parametrisation, to
+\[
+  t\mapsto \frac5t.
+\]
+(Alternatively, without Cayley: $(-y)-(-y)^{-1}=-(y-y^{-1})$, so the
+character is invariant under $y\mapsto-y$ as soon as $\chi(-1)=1$, i.e.,
+already under the weaker hypothesis $p\equiv1\pmod4$.)
+Moreover,
+\[
+  f\!\left(\frac5t\right)=f(t).
+\]
+Indeed, a direct computation yields
+\[
+\begin{aligned}
+ f\!\left(\frac5t\right)
+ &= \chi\!\left(\frac5t\right)
+    \chi\!\left(\frac{25}{t^2}-5\right)  \\
+ &= \chi(5)\chi(t)\,
+    \chi\!\left(\frac{5(5-t^2)}{t^2}\right) \\
+ &= \chi(5)^2\chi(t)\chi(5-t^2) \\
+ &= \chi(t)\chi(-(t^2-5)) \\
+ &= \chi(t)\chi(t^2-5) \\
+ &= f(t),
+\end{aligned}
+\]
+where the last step uses only $\chi(-1)=1$ (i.e., $p\equiv1\pmod4$).
+
+The pair $\{1,-1\}\subset T$ corresponds to $t=\infty$ and $t=0$.
+Both give zero contribution: for $y=1$ one has $y-y^{-1}=0$, and for
+$y=-1$ one again has $y-y^{-1}=0$. Hence summing over one representative
+from each pair $\{y,-y\}$ is the same as taking one half of the sum over
+all nonzero finite parameters $t\in\mathbb F_p^\times$. Therefore
+\[
+  S(p)
+  =
+  \frac12\sum_{t\in\mathbb F_p^\times}
+  \chi(t)\chi(t^2-5).
+\]
+The term $t=0$ is zero, so
+\[
+  S(p)
+  =
+  \frac12\sum_{t\in\mathbb F_p}
+  \chi(t)\chi(t^2-5)
+  =
+  \frac12\Jac(-5).
+\]
+
+Finally, substituting $x=\iota u$ gives
+\[
+\begin{aligned}
+ \Jac(-5)
+ &= \sum_{x\in\mathbb F_p}\chi(x)\chi(x^2-5)\\
+ &= \sum_{u\in\mathbb F_p}\chi(\iota u)\chi(-u^2-5)\\
+ &= \chi(\iota)\chi(-1)
+    \sum_{u\in\mathbb F_p}\chi(u)\chi(u^2+5)\\
+ &= \leg2p\,\Jac(5).
+\end{aligned}
+\]
+Since $p\equiv1\pmod8$, $\leg2p=1$, and hence
+\[
+  \Jac(-5)=\Jac(5).
+\]
+This proves the proposition.
+\end{proof}
+
+\begin{definition}[{Quartic residue symbol in $\mathbb Z[i]$}]\label{def:quartic-symbol}
+Let $\pi$ be a primary Gaussian prime of odd norm
+\[
+  N(\pi)=p,
+\]
+and let $\alpha\in\mathbb Z[i]$ be coprime to $\pi$.
+The quartic residue symbol
+\[
+  \biggl(\frac{\alpha}{\pi}\biggr)_{\!4}\in\{1,-1,i,-i\}
+\]
+is the unique fourth root of unity satisfying the Euler criterion
+\[
+  \alpha^{(p-1)/4}
+  \equiv
+  \biggl(\frac{\alpha}{\pi}\biggr)_{\!4}
+  \pmod{\pi}.
+\]
+An odd Gaussian integer is called primary if it is congruent to $1$
+modulo $2+2i$. We use the standard quartic reciprocity law for
+primary Gaussian integers; see
+Ireland--Rosen~\cite[Chapter~9, §§8--9, pp.~121--126]{IR}.
+\end{definition}
+
+\begin{lemma}[Sign via biquadratic reciprocity]\label{lem:sign5}
+Let $p\equiv1\pmod8$ with $\leg5p=-1$, and write
+\[
+  p=(a^{*})^2+b^2,
+  \qquad
+  a^{*}\equiv1\pmod4,\qquad b>0.
+\]
+Put
+\[
+  \pi=a^{*}+bi.
+\]
+With the convention of Definition~\ref{def:quartic-symbol}, one has
+$5\nmid a^{*}b$,
+\[
+  b\equiv\pm a^{*}\pmod5,
+\]
+and
+\[
+  \biggl(\frac{5}{\pi}\biggr)_{\!4}
+  =
+  \begin{cases}
+    i,  & b\equiv a^{*}\pmod5,\\
+    -i, & b\equiv -a^{*}\pmod5.
+  \end{cases}
+\]
+\end{lemma}
+
+\begin{proof}
+We use Definition~\ref{def:quartic-symbol} throughout. Since
+$\leg5p=-1$, one has
+\[
+  p\equiv2\ \text{or}\ 3\pmod5.
+\]
+The quadratic residues modulo~$5$ are $0,1,4$. From
+\[
+  p=(a^{*})^2+b^2
+\]
+it follows that neither $a^{*}$ nor $b$ is divisible by~$5$, and the two
+squares must be equal modulo~$5$: they are both~$1$ if $p\equiv2\pmod5$,
+and both~$4$ if $p\equiv3\pmod5$. Hence
+\[
+  b^2\equiv(a^{*})^2\pmod5,
+\]
+and therefore
+\[
+  r:=\frac{b}{a^{*}}\equiv\pm1\pmod5.
+\]
+
+Write
+\[
+  5=\lambda\bar\lambda,\qquad
+  \lambda=-1+2i,\qquad
+  \bar\lambda=-1-2i.
+\]
+Both $\lambda$ and $\bar\lambda$ are primary. Also $\pi$ is primary:
+since $p\equiv1\pmod8$, one has $b\equiv0\pmod4$ and
+$a^{*}\equiv1\pmod4$, so $\pi\equiv1\pmod{2+2i}$.
+
+For relatively prime primary Gaussian primes $\alpha$ and $\beta$,
+quartic reciprocity gives
+\[
+  \biggl(\frac{\alpha}{\beta}\biggr)_{\!4}
+  =
+  (-1)^{\frac{N(\alpha)-1}{4}\frac{N(\beta)-1}{4}}
+  \biggl(\frac{\beta}{\alpha}\biggr)_{\!4};
+\]
+see Ireland--Rosen~\cite[Chapter~9, §9, pp.~123--126]{IR}.
+Since
+\[
+  N(\lambda)=N(\bar\lambda)=5
+\]
+and
+\[
+  \frac{p-1}{4}
+\]
+is even, the sign factor is trivial. Therefore
+\[
+  \biggl(\frac{\lambda}{\pi}\biggr)_{\!4}
+  =
+  \biggl(\frac{\pi}{\lambda}\biggr)_{\!4},
+  \qquad
+  \biggl(\frac{\bar\lambda}{\pi}\biggr)_{\!4}
+  =
+  \biggl(\frac{\pi}{\bar\lambda}\biggr)_{\!4}.
+\]
+Hence
+\[
+  \biggl(\frac{5}{\pi}\biggr)_{\!4}
+  =
+  \biggl(\frac{\pi}{\lambda}\biggr)_{\!4}
+  \biggl(\frac{\pi}{\bar\lambda}\biggr)_{\!4}.
+\]
+
+Under the isomorphism $\mathbb Z[i]/(\lambda)\simeq\mathbb F_5$ one has
+$i\mapsto3$, while under
+$\mathbb Z[i]/(\bar\lambda)\simeq\mathbb F_5$ one has $i\mapsto2=3^{-1}$.
+Let $\ell$ denote the discrete logarithm to base~$3$ on $\mathbb F_5^\times$.
+Modulo $\lambda$,
+\[
+  \pi=a^{*}+bi\equiv a^{*}(1+3r),
+\]
+and modulo $\bar\lambda$,
+\[
+  \pi=a^{*}+bi\equiv a^{*}(1+2r).
+\]
+The factor $a^{*}$ cancels in the product.  Indeed, writing
+$a^{*}\equiv 3^{k}\pmod5$, its contribution modulo~$\lambda$ is
+$i^{k}$ (under $i\mapsto3$), while its contribution
+modulo~$\bar\lambda$ is $i^{-k}$ (under $i\mapsto3^{-1}$); the product
+of these contributions is~$1$.  Therefore
+\[
+  \biggl(\frac{5}{\pi}\biggr)_{\!4}
+  =
+  i^{\,\ell((1+3r)/(1+2r))}.
+\]
+If $r=1$, then
+\[
+  \frac{1+3r}{1+2r}=\frac4{3}\equiv3\pmod5,
+\]
+so the exponent is~$1$ and the symbol is~$i$. If $r=-1$, then
+\[
+  \frac{1+3r}{1+2r}=\frac{-2}{-1}\equiv2\pmod5,
+\]
+so the exponent is~$3$ and the symbol is $i^3=-i$. This proves the claim.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:B}]
+By Lemma~\ref{lem:index-parity}, $p\equiv1\pmod4$ and $z(p)=(p+1)/2$.
+If $p\equiv5\pmod8$, then $S(p)=0$ by Corollary~\ref{cor:vanishing}(a).
+
+Now assume $p\equiv1\pmod8$. Proposition~\ref{prop:inert-red} gives
+$S(p)=\tfrac12\Jac(5)$. Since $\varepsilon_p=-1$, $5$ is a quadratic
+non-residue modulo $p$. Choose any nonzero quadratic residue $r\bmod p$.
+By Lemma~\ref{lem:jacobsthal}, $\tfrac12\Jac(r)$ is odd,
+$\tfrac12\Jac(5)$ is even, and
+\[
+  \bigl(\tfrac12\Jac(r)\bigr)^2+\bigl(\tfrac12\Jac(5)\bigr)^2=p.
+\]
+The odd component of a representation of $p$ as a sum of two squares is
+$|a^{*}|$, and the even component is $b$. Hence
+$|\tfrac12\Jac(5)|=b$.
+
+It remains to determine the sign. By Lemma~\ref{lem:jac-cong},
+\[
+  \tfrac12\Jac(5)\equiv -a^{*}\,5^{(p-1)/4}\pmod p.
+\]
+Let
+\[
+  \pi=a^{*}+bi.
+\]
+Under the isomorphism
+\[
+  \mathbb Z[i]/(\pi)\simeq\mathbb F_p
+\]
+one has
+\[
+  i\equiv -\frac{a^{*}}{b}\pmod\pi.
+\]
+Moreover,
+\[
+  5^{(p-1)/4}\equiv
+  \biggl(\frac{5}{\pi}\biggr)_{\!4}
+  \quad\text{in }\mathbb Z[i]/(\pi).
+\]
+
+If $b\equiv a^{*}\pmod5$, Lemma~\ref{lem:sign5} gives
+\[
+  \biggl(\frac{5}{\pi}\biggr)_{\!4}=i.
+\]
+Hence, in $\mathbb F_p$,
+\[
+  5^{(p-1)/4}\equiv -\frac{a^{*}}{b}.
+\]
+Therefore
+\[
+  \tfrac12\Jac(5)
+  \equiv
+  -a^{*}\Bigl(-\frac{a^{*}}{b}\Bigr)
+  =
+  \frac{(a^{*})^2}{b}
+  \equiv
+  -b
+  \pmod p,
+\]
+because $(a^{*})^2+b^2=p\equiv0\pmod p$.
+
+If $b\equiv -a^{*}\pmod5$, Lemma~\ref{lem:sign5} gives
+\[
+  \biggl(\frac{5}{\pi}\biggr)_{\!4}=-i.
+\]
+Hence
+\[
+  5^{(p-1)/4}\equiv \frac{a^{*}}{b}\pmod p,
+\]
+and therefore
+\[
+  \tfrac12\Jac(5)
+  \equiv
+  -a^{*}\frac{a^{*}}{b}
+  =
+  -\frac{(a^{*})^2}{b}
+  \equiv
+  b
+  \pmod p.
+\]
+
+Since $\tfrac12\Jac(5)=\pm b$ and $b\not\equiv -b\pmod p$, these congruences
+determine the sign:
+\[
+  \tfrac12\Jac(5)
+  =
+  \begin{cases}
+    -b,& b\equiv a^{*}\pmod5,\\
+    \phantom{-}b,& b\equiv -a^{*}\pmod5.
+  \end{cases}
+\]
+Equivalently, $S(p)$ is the unique element of $\{\pm b\}$ congruent to
+$-a^{*}$ modulo~$5$.
+\end{proof}
+
+\begin{remark}
+Split index two thus realises the \emph{residue} Jacobsthal component ($\pm a^{*}$),
+and inert index two realises the \emph{non-residue} component ($\pm b$).
+\end{remark}
+
+\begin{remark}[Why parameter $5$ rather than $10$]
+For $p\equiv1\pmod8$ write $2=s^2$. Then
+$\Jac(10)=\Jac(5s^2)=\chi(s)\Jac(5)=\qleg2p\Jac(5)$.
+Hence $|\Jac(\pm10)|=2|S(p)|$, but the sign is twisted by the quartic symbol
+$\qleg2p$.
+\end{remark}
+% =====================================================================
+\section{Numerical evidence}\label{sec:numerics}
+% =====================================================================
+
+The companion verifier \texttt{ghandali\_verify\_index2.py}
+(version~1.0.1), archived with its machine-readable outputs and run log
+in~\cite{ghandaliIndex2Archive}, was run with
+\[
+  N=2\cdot 10^{6},
+  \qquad
+  \texttt{sum\_limit}=2\cdot 10^{6},
+  \qquad
+  \texttt{jac\_limit}=2\cdot 10^{6},
+\]
+computing direct Fibonacci character sums for rank indices \(2\) and
+\(4\).  The run formed a rank inventory of \(148{,}931\) primes
+\(p\le N\) with \(p\nmid10\); all theorem-level cases reported in the
+table below satisfy the standing hypothesis \(p>5\).  It selected
+\(52{,}477\) direct \(S(p)\)-records and returned zero mismatches in
+the theorem-level identities checked by the verifier.
+
+\begin{center}
+\small
+\begin{tabular}{@{}llp{1.6cm}p{1.8cm}l@{}}
+\toprule
+Case & Prediction & Primes & Agreement & Proved in\\
+\midrule
+inert, \(i_p=2\), \(p\equiv1\pmod8\)
+  & \(S\in\{\pm b\}\), \(S\equiv-a^{*}\pmod5\)
+  & 14591 & 14591/14591 & Thm.~\ref{thm:B}\\
+inert, \(i_p=2\), \(p\equiv5\pmod8\)
+  & \(S=0\)
+  & 14696 & 14696/14696 & Cor.~\ref{cor:vanishing}\\
+split, \(i_p=2\), \(p\equiv1\pmod8\)
+  & \(S=\delta_p a^{*}\)
+  & 6551 & 6551/6551 & Thm.~\ref{thm:A}\\
+split, \(i_p=2\), \(p\equiv5\pmod8\)
+  & \(S=-\delta_p\)
+  & 6583 & 6583/6583 & Thm.~\ref{thm:A}\\
+split, \(i_p=4\), \(p\equiv5\pmod8\)
+  & \(S=0\)
+  & 6697 & 6697/6697 & Cor.~\ref{cor:vanishing}\\
+split, \(i_p=4\), \(p\equiv1\pmod8\)
+  & open; \(S\) odd
+  & 3359 & --- & ---\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+The same run also checked the rank identity \(z(p)i_p=n_p\) and the
+index-parity criterion on all \(148{,}931\) primes in the rank
+inventory.  The identity
+\[
+  \chi(F_{z(p)+1})=\left(\frac2p\right)
+\]
+for odd \(z(p)\) was checked on \(49{,}618\) primes, and the reflection
+criteria used in Corollary~\ref{cor:vanishing} were checked with zero
+mismatches.  The split and inert Jacobsthal reductions were checked
+directly throughout the same range wherever the corresponding direct
+Jacobsthal sums were computed; in particular,
+\[
+  2S(p)=\Jac(5)
+\]
+was checked for all \(14{,}591\) inert index-two primes with
+\(p\equiv1\pmod8\) below \(2\cdot10^{6}\).  The same run verified the
+signed law \(S(p)\equiv-a^{*}\pmod5\) on those primes with zero
+mismatches.
+
+Claims of zero mismatches refer to the archived run deposited
+in~\cite{ghandaliIndex2Archive}, which contains the verifier source code
+(version~1.0.1), machine-readable CSV and JSON output files, the run log
+with the parameters recorded above, and checksums.  The present paper
+records only the mathematical summary of these computations.
+
+% =====================================================================
+\section{Conditional density context}\label{sec:context}
+% =====================================================================
+
+This section is included only as conditional context under the
+generalized Riemann hypothesis and is not used in the proofs of
+Theorems~\ref{thm:A} and~\ref{thm:B}. Those theorems are unconditional.
+
+\subsection{A conditional density corollary for inert index two}\label{sec:density}
+
+The computations in Section~\ref{sec:numerics} suggest the two index-two
+density constants
+\[
+  \frac{9A}{38}\qquad\text{in the split branch}
+\]
+and
+\[
+  \frac{10A}{19}\qquad\text{in the inert branch},
+\]
+where \(A\) denotes Artin's constant.  The split value is recorded here
+as a conjectural density suggested by the data. In contrast, the inert value follows, as a Dirichlet density, conditionally from the
+GRH-dependent density theorems of Roskam~\cite{Roskam2000} and
+Chen~\cite{Chen2002}, in the general Artin-type framework of
+Lenstra~\cite{Lenstra1977}, once their maximal-order statements are
+translated into the present rank-index notation; the derivation is
+self-contained in Corollary~\ref{cor:inert-index-two-density} and does
+not rely on~\cite{Ghandali2026Preprint}.
+
+\paragraph{The rank index as a group index.}
+Let \(p\nmid 10\), and write
+\[
+  \eta=\frac{\varphi}{\psi}=-\varphi^{2}.
+\]
+If \(\leg{5}{p}=1\), put \(G_p=\mathbb F_p^{\times}\).  If
+\(\leg{5}{p}=-1\), let
+\[
+  G_p=T(\mathbb F_p)
+  =
+  \ker\!\left(
+    N:\mathbb F_{p^{2}}^{\times}\to\mathbb F_p^{\times}
+  \right)
+\]
+be the norm-one torus.  In both cases \(G_p\) is cyclic of order
+\[
+  n_p=p-\leg{5}{p},
+\]
+and \(\eta\in G_p\).  Since
+\[
+  F_n=\frac{\varphi^{n}-\psi^{n}}{\sqrt5},
+\]
+one has \(F_n\equiv0\pmod p\) if and only if \(\eta^n=1\).  Hence
+\[
+  z(p)=\operatorname{ord}_{G_p}(\eta),
+  \qquad
+  i_p=[G_p:\langle\eta\rangle].
+\]
+Thus full rank \(i_p=1\) means that \(\eta\) is a primitive point of
+the one-dimensional torus attached to \(\mathbb Q(\sqrt5)\), while
+rank index \(t\) means that \(\eta\) generates the unique subgroup of
+index \(t\).  This is the torus-theoretic form of the generalized
+Artin problem in the sense of Lenstra~\cite{Lenstra1977}, and is the
+setting of Chen's theorem on primitive points of one-dimensional
+tori~\cite{Chen2002}.
+\begin{lemma}[2-adic dictionary, inert branch]\label{lem:2adic}
+Let \(p\neq2,5\) be inert in \(\mathbb Q(\sqrt5)\), and put
+\[
+  d=\operatorname{ord}(\bar\varphi^{\,2}),
+\]
+where \(\bar\varphi\) denotes the image of \(\varphi\) in
+\(\mathbb F_{p^2}^{\times}\).  Then:
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item
+\[
+  \bar\varphi^{\,p+1}=N(\bar\varphi)=-1.
+\]
+Consequently \(d\mid p+1\), the quotient \((p+1)/d\) is odd, and
+\[
+  \bar\eta=(\bar\varphi^{\,2})^{(p+3)/2}.
+\]
+
+\item
+If \(p\equiv3\pmod4\), then
+\[
+  \gcd\!\left(d,\frac{p+3}{2}\right)=1,
+\]
+so
+\[
+  z(p)=d,\qquad i_p=\frac{p+1}{d},
+\]
+and \(i_p\) is odd.
+
+\item
+If \(p\equiv1\pmod4\), then \(d=2u\) with \(u\) odd and
+\[
+  \gcd\!\left(d,\frac{p+3}{2}\right)=2.
+\]
+Therefore
+\[
+  z(p)=u=\frac d2,\qquad
+  i_p=\frac{p+1}{u}=\frac{2(p+1)}{d}\equiv2\pmod4.
+\]
+\end{enumerate}
+In particular,
+\begin{equation}\label{eq:dictionary}
+\{\,p\text{ inert}:\ i_p\in\{1,2\}\,\}
+=
+\{\,p\text{ inert}:\ d=p+1\,\}.
+\end{equation}
+The set on the right is the inert maximal-order set for the fundamental
+unit \(\varphi\), equivalently the set denoted \(S^{-}\) in Roskam's
+specialization to \(\mathbb Q(\sqrt5)\)~\cite{Roskam2000}.
+\end{lemma}
+
+\begin{proof}
+Since \(p\) is inert in \(\mathbb Q(\sqrt5)\), Frobenius interchanges
+\(\bar\varphi\) and \(\bar\psi\).  Hence
+\[
+  \bar\varphi^{\,p+1}
+  =
+  \bar\varphi\,\bar\varphi^{\,p}
+  =
+  \bar\varphi\,\bar\psi
+  =
+  -1.
+\]
+Let \(m=\operatorname{ord}(\bar\varphi)\).  Then
+\(m\mid2(p+1)\), while \(m\nmid p+1\), because
+\(\bar\varphi^{\,p+1}=-1\).  Therefore
+\[
+  d=\operatorname{ord}(\bar\varphi^{\,2})
+\]
+divides \(p+1\), but \(d\nmid(p+1)/2\).  Equivalently,
+\((p+1)/d\) is odd.  Moreover
+\[
+  -1
+  =
+  \bar\varphi^{\,p+1}
+  =
+  (\bar\varphi^{\,2})^{(p+1)/2},
+\]
+and hence
+\[
+  \bar\eta=-\bar\varphi^{\,2}
+  =
+  (\bar\varphi^{\,2})^{(p+3)/2}.
+\]
+This proves (i).
+
+For (ii), write \(p=4k+3\).  Then \((p+3)/2=2k+3\) is odd.  Any common
+divisor of \(d\) and \((p+3)/2\) divides
+\[
+  2\cdot\frac{p+3}{2}-(p+1)=2.
+\]
+Since \((p+3)/2\) is odd, this common divisor must be \(1\).  Therefore
+\[
+  z(p)
+  =
+  \operatorname{ord}(\bar\eta)
+  =
+  \frac{d}{\gcd(d,(p+3)/2)}
+  =
+  d,
+\]
+and so
+\[
+  i_p=\frac{p+1}{z(p)}=\frac{p+1}{d},
+\]
+which is odd by (i).
+
+For (iii), write \(p=4k+1\).  Then \(v_2(p+1)=1\).  Since
+\((p+1)/d\) is odd, we have \(v_2(d)=1\), so \(d=2u\) with \(u\) odd.
+Also
+\[
+  \frac{p+3}{2}=\frac{p+1}{2}+1
+\]
+is even, and
+\[
+  \gcd\!\left(u,\frac{p+3}{2}\right)
+  \mid
+  \gcd\!\left(\frac{p+1}{2},\frac{p+3}{2}\right)
+  =
+  1.
+\]
+Thus
+\[
+  \gcd\!\left(d,\frac{p+3}{2}\right)=2.
+\]
+It follows that
+\[
+  z(p)=\frac d2=u,
+  \qquad
+  i_p=\frac{p+1}{u}=\frac{2(p+1)}{d}.
+\]
+Since \((p+1)/d\) is odd, this gives \(i_p\equiv2\pmod4\).
+
+Finally, if \(p\equiv3\pmod4\), then \(i_p\) is odd and
+\(i_p=1\) is equivalent to \(d=p+1\).  If \(p\equiv1\pmod4\), then
+\(i_p\equiv2\pmod4\), and \(i_p=2\) is again equivalent to
+\(d=p+1\).  This proves \eqref{eq:dictionary}.  The final identification with Roskam's inert maximal-order set is
+exactly the condition that \(\bar\varphi^{\,2}\) generate the norm-one
+group of order \(p+1\), as in Roskam's quadratic analogue of Artin's
+conjecture~\cite{Roskam2000}.
+\end{proof}
+\begin{corollary}[GRH; Roskam--Chen]
+\label{cor:inert-index-two-density}
+Assume the generalized Riemann hypothesis for the Kummer extensions
+occurring in the density theorems of Roskam~\cite{Roskam2000} and
+Chen~\cite{Chen2002}. Then the set of primes $p>5$ such that
+\[
+\leg{5}{p}=-1,
+\qquad
+i_p=2
+\]
+has Dirichlet density
+\[
+\frac{10A}{19}
+\]
+among all rational primes, where $A$ denotes Artin's constant. This
+is a specialization of the cited conditional density theorems into
+the present rank-index notation; it is not an independent density
+theorem of this paper and is not used in the proofs of
+Theorems~\ref{thm:A} and~\ref{thm:B}.
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:2adic}, the inert primes with $i_p\in\{1,2\}$ are
+precisely the inert primes for which
+\[
+\operatorname{ord}(\bar\varphi^{\,2})=p+1.
+\]
+This is Roskam's inert maximal-order set $S^-$ for the fundamental
+unit $\varphi$ of $\mathbb Q(\sqrt5)$. Since $N(\varphi)=-1$ and
+$D=5$ is odd, Roskam's GRH-conditional Theorem~2(b)
+\cite{Roskam2000} gives the \emph{natural} density
+\[
+\delta_{\mathrm{nat}}(S^-)=A\bigl(1-E(5)\bigr)
+=A\Bigl(1+\frac1{19}\Bigr)=\frac{20A}{19},
+\]
+where, for square-free $a$,
+\[
+E(a)=\mu(a)\prod_{q\mid a}\frac{1}{q(q-1)-1},
+\qquad
+E(5)=-\frac{1}{5\cdot4-1}=-\frac1{19}.
+\]
+The erratum to \cite{Roskam2000} corrects Lemmas~6--7 and the
+formulas of Theorem~2(a) for the case $N(\varepsilon)=+1$ and for
+$\delta(S^+)$ when $2\mid D$; it does not alter the formula
+$\delta(S^-)=A(1-E(D))$ used here for $N(\varepsilon)=-1$. A set
+with natural density has the same Dirichlet density, so
+\[
+\delta_D(S^-)=\frac{20A}{19}.
+\]
+
+We now compute the Dirichlet density of the inert full-rank set
+directly from Chen's Theorem~2.1 \cite{Chen2002}, applied to
+\[
+\eta=-\varphi^2\in K=\mathbb Q(\sqrt5).
+\]
+The element $\eta$ is nontorsion with $N_{K/\mathbb Q}(\eta)=1$ and
+is not a proper power in $K^\times$: it is negative under both real
+embeddings of $K$, so it has no square root in the real field $K$;
+and an equality $\eta=(\pm\varphi^m)^q$ with $q$ an odd prime would
+force $mq=2$, which is impossible. Hence the exponent $s$ in Chen's
+notation equals $1$.
+
+For square-free $n$, Chen's field $k_n$ equals $K$ if $n$ is odd and
+$K(\sqrt\eta)=K(i)$ if $n$ is even. Consequently the intersection
+degree
+\[
+[\,k_n\cap\mathbb Q(\mu_n):\mathbb Q\,]
+=
+\begin{cases}
+2,&5\mid n,\\
+1,&5\nmid n,
+\end{cases}
+\]
+because $K=\mathbb Q(\sqrt5)$ is contained in $\mathbb Q(\mu_n)$
+exactly when $5\mid n$, while a square-free $n$ is never divisible
+by $4$, so $\mathbb Q(\mu_n)$ cannot contain $i$. Chen's
+Lemma~1.6 \cite{Chen2002} therefore gives the Kummer degrees
+\[
+d_n=[E_n:\mathbb Q]=
+\begin{cases}
+n\varphi(n),&5\mid n,\\[2pt]
+2n\varphi(n),&5\nmid n.
+\end{cases}
+\]
+For the inert obstruction coefficients, Chen's Lemma~1.7(a)
+\cite{Chen2002} gives $c_n^-=0$ when $5\mid n$, since $K$ is real
+and contained in $\mathbb Q(\mu_n)$; and $c_n^-=1$ when
+$5\nmid n$, since then none of the three obstruction conditions of
+that lemma applies: $K$ is not contained in $\mathbb Q(\mu_n)$, the
+field $K'=\mathbb Q(i)$ is not contained in $\mathbb Q(\mu_n)$ for
+square-free $n$, and $K''=\mathbb Q(\sqrt{-5})$ is imaginary.
+Chen's formula
+$\operatorname{den}(M_\eta^-)=\sum_n c_n^-\,\mu(n)/d_n$
+\cite[Theorem~2.1]{Chen2002} therefore yields
+\[
+\delta_D(M_\eta^-)
+=\sum_{5\nmid n}\frac{\mu(n)}{2n\varphi(n)}
+=\frac12\prod_{q\ne5}\Bigl(1-\frac1{q(q-1)}\Bigr)
+=\frac12\cdot\frac{A}{1-1/20}
+=\frac{10A}{19}.
+\]
+Since $z(p)=\operatorname{ord}(\bar\eta)$ and, for inert $p$,
+$i_p=(p+1)/z(p)$, the set $M_\eta^-$ is exactly the inert full-rank
+set $\{p\text{ inert}: i_p=1\}$.
+
+The sets $\{i_p=1\}$ and $\{i_p=2\}$ are disjoint
+(Lemma~\ref{lem:2adic}(ii)--(iii): $i_p=1$ forces
+$p\equiv3\pmod4$, while $i_p=2$ forces $p\equiv1\pmod4$), and their
+union is $S^-$ up to finitely many excluded primes. Dirichlet
+density is additive for finite disjoint decompositions, so
+\[
+\begin{aligned}
+\delta_D\{\,p>5:\leg{5}{p}=-1,\ i_p=2\,\}
+&=\delta_D(S^-)-\delta_D(M_\eta^-)\\
+&=\frac{20A}{19}-\frac{10A}{19}
+=\frac{10A}{19}.
+\end{aligned}
+\]
+\end{proof}
+
+\begin{remark}[Natural versus Dirichlet density]
+\label{rem:natural-vs-dirichlet}
+The corollary is stated for Dirichlet density, which is what the
+above argument yields. Roskam's Theorem~2(b) in fact provides the
+natural density of $S^-$, but Chen's Theorem~2.1 is stated for
+Dirichlet density; subtracting a Dirichlet density from a natural
+density does not, by itself, establish natural density for the
+difference set. Promoting the statement to natural density would
+require an effective Hooley-type argument (GRH-conditional Chebotarev
+estimates with tail control) applied to the inert full-rank set
+$\{i_p=1\}$ directly, along the lines of \cite{Murty1983}; the
+convergence of the Euler product in the computation above is not by
+itself such an estimate. The numerical data of
+Section~\ref{sec:numerics} is of course consistent with either notion
+of density. We record the Dirichlet-density statement, which is the
+strongest that the cited references directly support.
+\end{remark}
+
+\begin{remark}[Numerical confirmation and the split branch]
+\label{rem:split-status}
+The Dirichlet-density value in Corollary~\ref{cor:inert-index-two-density} is also reflected numerically.
+In the run up to \(2\cdot10^{6}\), there are
+\[
+  14{,}591+14{,}696=29{,}287
+\]
+inert primes with \(i_p=2\).  Writing \(C(N)=29{,}287\) for this count and
+letting \(\pi^{*}(N)\) denote the number of primes \(p\le N\) with
+\(p\nmid10\), one has
+\[
+  \frac{C(N)}{\pi^{*}(N)A}\approx0.525859,
+\]
+compared with the GRH-conditional prediction
+\[
+  \frac{10}{19}\approx0.526316.
+\]
+The relative deviation is about \(0.09\%\).
+
+The split index-two density suggested by the data is
+\[
+  \frac{9A}{38}.
+\]
+In the same run, if \(C_{\mathrm{split}}(N)\) denotes the number of split
+index-two primes up to \(N\), one has
+\[
+  \frac{C_{\mathrm{split}}(N)}{\pi^{*}(N)A}\approx0.235826,
+\]
+compared with
+\[
+  \frac{9}{38}\approx0.236842.
+\]
+Unlike the inert branch, the split index-two set does not appear to
+admit the same direct dictionary with Roskam's split maximal-order set.
+The obstruction is the \(2\)-primary Kummer behaviour described in
+Remark~\ref{rem:kummer-halving}; see also the discussion of the
+full-rank split branch in~\cite{Ghandali2026Preprint}.  Thus the split value is recorded
+here as a conjectural density supported by the computation, not as a
+theorem.  Its eventual proof should fall within the near-primitive-root
+framework treated in
+\cite{LenstraMoreeStevenhagen2014,Palenstijn2014,Kataoka2003}.
+\end{remark}
+
+\begin{remark}[Kummer degree when \(4\mid n\)]\label{rem:kummer-halving}
+Write
+\[
+  K_n=\mathbb Q(\sqrt5,\zeta_n).
+\]
+Density computations of Artin type for the subgroup generated by
+\(\eta\) depend on the Kummer degrees
+\[
+  [K_n(\eta^{1/n}):K_n].
+\]
+If \(4\mid n\), then \(i=\zeta_4\in K_n\), and
+\[
+  \eta=-\varphi^{2}=(i\varphi)^2
+\]
+is already a square in \(K_n\).  Consequently
+\[
+  [K_n(\eta^{1/n}):K_n]\le \frac n2.
+\]
+Thus any density computation which treats this degree as \(n\) without
+correction is valid only away from the \(4\mid n\) levels.  This
+\(2\)-primary obstruction is precisely why the split index-two density
+requires a separate near-primitive-root analysis, rather than a naive
+subtraction from Roskam's split maximal-order set.  Compare the
+general Artin-type frameworks of Lenstra~\cite{Lenstra1977} and
+Chen~\cite{Chen2002}.
+\end{remark}
+
+\paragraph{Numerical comparison.}
+Table~\ref{tab:density} records the aggregate density ratios obtained
+from the \(N=2\cdot10^{6}\) verification run.  The density rows are
+included as context for the rank-index distribution; the finite
+computation is not used as a proof of the GRH-conditional density
+Corollary~\ref{cor:inert-index-two-density}.
+
+\begin{table}[ht]
+\centering
+\small
+\begin{tabular}{@{}llcc@{}}
+\toprule
+Quantity & Unit & Prediction & \(N=2\cdot10^{6}\) \\
+\midrule
+full rank, all & \(A\) & \(1\) & \(1.00128\) \\
+full rank, split & \(A\) & \(9/19=0.47368\) & \(0.47415\) \\
+full rank, inert & \(A\) & \(10/19=0.52632\) & \(0.52713\) \\
+\midrule
+\(i_p=2\), split & \(A\) & \(9/38=0.23684\) conjectural & \(0.23583\) \\
+\(i_p=2\), inert & \(A\) & \(10/19=0.52632\) Dirichlet, conditional & \(0.52586\) \\
+\bottomrule
+\end{tabular}
+\caption{Aggregate rank-index density ratios from the companion
+verification run with \(N=2\cdot10^{6}\).  The density framework is the
+GRH-conditional Artin--Lenstra--Chen--Roskam framework
+\cite{Lenstra1977,Chen2002,Roskam2000}.  The inert index-two value
+\(10A/19\) is the \emph{Dirichlet} density of
+Corollary~\ref{cor:inert-index-two-density}
+(see Remark~\ref{rem:natural-vs-dirichlet}).  The split index-two value
+\(9A/38\) is recorded only as a conjectural density suggested by the
+data.  The finite computation is not used as a proof of any density
+statement.}
+\label{tab:density}
+\end{table}
+
+\subsection{Framework and the series}
+
+\begin{remark}[Framework for index densities]
+The determination of densities at fixed rank index is an instance of
+the generalized Artin problem in the sense of
+Lenstra~\cite{Lenstra1977}.  Murty~\cite{Murty1983} supplies a
+conditional analytic framework for Artin-type problems.  The
+quadratic-field case for units is treated by
+Ishikawa--Kitaoka~\cite{IshikawaKitaoka1998},
+Chen--Kitaoka--Yu~\cite{ChenKitaokaYu2000},
+Roskam~\cite{Roskam2000,Roskam2002}, and
+Kataoka~\cite{Kataoka2001,Kataoka2003}.  Near-primitive-root and
+character-sum formulations of primitive-root densities are treated in
+\cite{LenstraMoreeStevenhagen2014,Palenstijn2014}.  In the present
+setting the relevant point is the norm-one element
+\[
+  \eta=-\varphi^{2}
+\]
+on the torus attached to \(\mathbb Q(\sqrt5)\).  The full-rank case
+\(i_p=1\) is governed, under GRH, by Chen's density theorem for
+primitive points on one-dimensional tori~\cite{Chen2002}, while the
+inert index-one/index-two union is identified in Lemma~\ref{lem:2adic}
+with Roskam's inert maximal-order set for the fundamental unit
+\(\varphi\).  The present paper uses this density framework only for
+contextual information; the proofs of Theorems~\ref{thm:A} and
+\ref{thm:B} are independent of GRH.
+\end{remark}
+
+\begin{remark}[Relation to the author's series]
+The present paper is part of a sequence of works on rank-block
+decompositions and character sums in Fibonacci and Lucas sequences.
+The paper on half-period involutions~\cite{Ghandali2026HalfPeriod} treats exact
+cancellation mechanisms in inert Lucas sequences, and the full-rank
+paper~\cite{Ghandali2026Preprint} evaluates \(S(p)\) at \(i_p=1\).  The present paper
+contributes the rank-index-two reductions
+\[
+  S(p)=\frac12\Jac(\cdot)
+\]
+together with the resulting explicit evaluations in
+Theorems~\ref{thm:A} and~\ref{thm:B}.  Rank-multiplier and reflection
+identities used here are classical in origin, going back to
+Lucas~\cite{Lucas1878} and later treatments of Lucas sequences such as
+Somer~\cite{Somer1980}; see also~\cite{Ghandali2026HalfPeriod}.  No proof in the present
+paper depends on an unpublished manuscript.
+\end{remark}
+
+% =====================================================================
+\section{Further problems and directions}\label{sec:open}
+% =====================================================================
+
+\begin{remark}[Signed inert two-square law]
+The sign in the inert case \(i_p=2\), \(p\equiv1\pmod8\) is not an
+open refinement: Theorem~\ref{thm:B} determines it by the congruence
+\(S(p)\equiv-a^{*}\pmod5\).  The companion verifier (\texttt{ghandali\_verify\_index2.py}, version~1.0.1) checks this signed
+law directly (zero mismatches on all \(14{,}591\) eligible primes below
+\(2\cdot10^{6}\)).
+\end{remark}
+
+\begin{problem}[Index four]\label{prob:index-four}
+For split primes with \(i_p=4\), the branch \(p\equiv5\pmod8\) is
+explained by the reflection vanishing mechanism: in the computation up
+to \(2\cdot10^{6}\), the identity
+\[
+  S(p)=0
+\]
+held with zero mismatches on \(6697\) such primes.
+
+The remaining split branch \(p\equiv1\pmod8\) appears to contain new
+structure.  In the same range, \(S(p)\) was odd for all \(3359\) tested
+primes, and the maximum observed value of
+\[
+  \frac{|S(p)|}{\sqrt p}
+\]
+was
+\[
+  0.502683773697118.
+\]
+A natural next step is to seek an analogue of
+Proposition~\ref{prop:split-red} involving quartic Jacobsthal sums or
+Jacobi sums.
+\end{problem}
+
+\begin{problem}[Index three]\label{prob:index-three}
+Preliminary computations suggest that split primes of rank index three
+may be governed by cubic character sums. Establishing a precise analogue
+of the index-two Jacobsthal reduction remains open.
+\end{problem}
+
+
+\begin{problem}[Other Lucas sequences]\label{prob:other-lucas}
+The reductions in Propositions~\ref{prop:split-red} and
+\ref{prop:inert-red} use the identities
+\[
+  \varphi\psi=-1
+\]
+and the associated Cayley parametrisation.  They therefore extend
+formally to Lucas sequences \(U_n(P,-1)\), for which the discriminant
+\(5\) is replaced by \(P^2+4\).  The final closed evaluations in
+Theorem~\ref{thm:A}, however, rely on the special quartic character
+identity for the Fibonacci unit.  A complete analogue for general \(P\)
+would require a corresponding evaluation of the quartic character of
+the relevant fundamental unit.
+\end{problem}
+
+\begin{problem}[Arbitrary fixed index]\label{prob:arbitrary-index}
+For a general fixed index \(t\ge1\), can the character sum
+\[
+  S(p)=\sum_{j=1}^{z(p)}\chi(F_j)
+\]
+be expressed systematically in terms of Jacobi sums or Jacobsthal sums
+of order \(t\) or \(2t\)?  The full-rank case \(t=1\) and the present
+rank-index-two case suggest that fixed-index Fibonacci character sums
+should admit a uniform description through finite-field character sums.
+\end{problem}
+
+% =====================================================================
+\section*{Declarations}
+% =====================================================================
+\noindent
+No external funding was received for this work.  The author declares no
+competing interests.  Computational verification was performed with the
+companion verifier; the versioned source code, machine-readable output
+files, and run log are available in the reproducibility
+archive~\cite{ghandaliIndex2Archive}.
+
+\bibliographystyle{abbrvnat}
+\bibliography{ghandali_index2}
+
+\end{document}

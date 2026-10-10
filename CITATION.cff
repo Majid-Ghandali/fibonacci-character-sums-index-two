@@ -1,0 +1,44 @@
+cff-version: 1.2.0
+title: "Reproducibility Archive for Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums"
+message: "If you use this software or its output files, please cite the Zenodo software archive and the associated manuscript."
+type: software
+
+authors:
+  - family-names: Ghandali
+    given-names: Majid
+    orcid: "https://orcid.org/0009-0001-1097-1770"
+    affiliation: "Independent Researcher"
+
+version: "1.0.1"
+date-released: "2026-10-09"
+doi: "10.5281/zenodo.23263042"
+url: "https://github.com/Majid-Ghandali/fibonacci-character-sums-index-two"
+repository-code: "https://github.com/Majid-Ghandali/fibonacci-character-sums-index-two"
+license: "MIT"
+
+abstract: "Public reproducibility verifier and machine-readable output files for the manuscript Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums. The verifier checks finite-range evidence for rank-index-two Fibonacci character-sum identities and their reductions to Jacobsthal sums, separating theorem-level checks from exploratory checks and density context."
+
+keywords:
+  - Fibonacci numbers
+  - character sums
+  - Legendre symbol
+  - rank of apparition
+  - rank index
+  - Jacobsthal sums
+  - Lucas sequences
+  - quadratic characters
+  - computational number theory
+  - reproducibility
+  - Python
+
+preferred-citation:
+  type: article
+  title: "Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums"
+  authors:
+    - family-names: Ghandali
+      given-names: Majid
+      orcid: "https://orcid.org/0009-0001-1097-1770"
+      affiliation: "Independent Researcher"
+  year: 2026
+  doi: "10.5281/zenodo.23264457"
+  url: "https://doi.org/10.5281/zenodo.23264457"

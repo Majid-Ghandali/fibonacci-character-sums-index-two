@@ -1,0 +1,11 @@
+# Byte-preserving repository policy
+# Do not normalize line endings; preserve files as stored.
+* -text
+
+*.pdf binary
+*.xlsx binary
+*.pkl binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.zip binary
