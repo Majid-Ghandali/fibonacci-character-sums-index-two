@@ -12,7 +12,7 @@ Get-ChildItem -ErrorAction SilentlyContinue *.aux,*.bbl,*.blg,*.log,*.out,*.toc,
 pdflatex -interaction=nonstopmode ghandali_index2.tex
 if ($LASTEXITCODE -ne 0) { Write-Warning "pdflatex pass 1 had errors (see main.log)" }
 
-bibtex main
+bibtex ghandali_index2
 pdflatex -interaction=nonstopmode ghandali_index2.tex
 pdflatex -interaction=nonstopmode ghandali_index2.tex
 
