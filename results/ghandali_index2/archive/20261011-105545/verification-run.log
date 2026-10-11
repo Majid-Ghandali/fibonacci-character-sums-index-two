@@ -1,0 +1,13 @@
+Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums
+author: Majid Ghandali
+script: ghandali_verify_index2.py 1.0.1
+started: 2026-10-11T10:35:52
+limit=2000000  sum_limit=2000000  jac_limit=2000000
+workers=14  rank_chunk=5000  sum_indices=2,4
+checkpoint_status=fresh-requested
+building prime sieve...
+primes for rank inventory: 148931
+computing ranks and indices...
+rank rows: 148931
+direct S records selected: 52477
+computing direct S(p) records...

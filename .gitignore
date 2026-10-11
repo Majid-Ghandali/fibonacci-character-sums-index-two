@@ -55,3 +55,7 @@ _local_hold_before_github/
 results/*
 !results/release-v1.0.1/
 !results/release-v1.0.1/**
+
+# Verified 1.0.1 rerun evidence; keep separate from frozen release-v1.0.1.
+!results/ghandali_index2/
+!results/ghandali_index2/**

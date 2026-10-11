@@ -435,3 +435,10 @@ Full scope statement: [`LICENSES.md`](LICENSES.md).
 Independent Researcher, Tehran, Iran<br>
 Email: [majid.ghandali@gmail.com](mailto:majid.ghandali@gmail.com)<br>
 ORCID: [0009-0001-1097-1770](https://orcid.org/0009-0001-1097-1770)
+
+
+## Verified rerun evidence (1.0.1)
+
+The directory `results/ghandali_index2/` records a verified rerun using `code/ghandali_verify_index2.py` version `1.0.1` with the parameters recorded in `verification-run.log`. Its `SHA256SUMS.txt` validates the verifier and all listed output files.
+
+This rerun evidence is kept separate from `results/release-v1.0.1/`. The latter remains unchanged as historical frozen evidence with its own recorded provenance.
