@@ -11,8 +11,8 @@ authors:
 
 version: "v1.0.0-preprint"
 date-released: "2026-10-09"
-doi: "10.5281/zenodo.23264457"
-url: "https://doi.org/10.5281/zenodo.23264457"
+doi: "10.5281/zenodo.23264456"
+url: "https://doi.org/10.5281/zenodo.23264456"
 license: "CC-BY-4.0"
 
 abstract: "This preprint studies quadratic character sums over one full rank period of the Fibonacci sequence at rank index two. The main results reduce the Fibonacci character sum at rank index two to classical Jacobsthal sums and give explicit split and inert evaluations. The manuscript also records a GRH-conditional density corollary for inert index-two primes derived from the density theorems of Roskam and Chen."
@@ -37,7 +37,7 @@ references:
         given-names: Majid
         orcid: "https://orcid.org/0009-0001-1097-1770"
         affiliation: "Independent Researcher"
-    version: "1.0.1"
+    version: "1.0.2"
     year: 2026
-    doi: "10.5281/zenodo.23263042"
-    url: "https://doi.org/10.5281/zenodo.23263042"
+    doi: "10.5281/zenodo.23263041"
+    url: "https://doi.org/10.5281/zenodo.23263041"

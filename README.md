@@ -54,9 +54,9 @@ python code/ghandali_verify_index2.py --safe --fresh
 Equivalent explicit form:
 
 ```bash
-python code/ghandali_verify_index2.py
-  --limit 10000 --sum-limit 10000 --jac-limit 10000
-  --workers 1 --sum-indices 2,4
+python code/ghandali_verify_index2.py \
+  --limit 10000 --sum-limit 10000 --jac-limit 10000 \
+  --workers 1 --sum-indices 2,4 \
   --out results/reproduced-smoke-N10000 --fresh
 ```
 
@@ -91,11 +91,7 @@ Start from an empty `results\ghandali_index2_v1.0.2\` (the verifier refuses to
 reuse a directory that already holds a finished run, and refuses N < 2,000,000):
 
 ```powershell
-python code\ghandali_verify_index2.py
-  --limit 2000000 --sum-limit 2000000 --jac-limit 2000000
-  --workers 14 --sum-indices 2,4
-  --out results\ghandali_index2_v1.0.2
-  --fresh
+python code\ghandali_verify_index2.py --limit 2000000 --sum-limit 2000000 --jac-limit 2000000 --workers 14 --sum-indices 2,4 --out results\ghandali_index2_v1.0.2 --fresh
 ```
 
 Gate after completion:
@@ -109,10 +105,7 @@ Gate after completion:
 All four gates (and more) are automated:
 
 ```powershell
-python code\gate_official.py --dir
-results\ghandali_index2_v1.0.2
-  --ref results\ghandali_index2\verification-summary.json
-  --script code\ghandali_verify_index2.py
+python code\gate_official.py --dir results\ghandali_index2_v1.0.2 --ref results\ghandali_index2\verification-summary.json --script code\ghandali_verify_index2.py
 ```
 
 Headline counts at $N=2\cdot10^6$, confirmed by the official 1.0.2 run (2026-10-13; Python 3.12.7, numpy 1.26.4; runtime 5036 s; acceptance gate 53/53):
@@ -125,12 +118,6 @@ Headline counts at $N=2\cdot10^6$, confirmed by the official 1.0.2 run (2026-10-
 | Split $i_p=2$, $p\equiv5\pmod8$ | 6,583 |
 | Inert $i_p=2$, $p\equiv1\pmod8$ | 14,591 |
 | Inert $i_p=2$, $p\equiv5\pmod8$ | 14,696 |
-| Split $i_p=4$, $p\equiv5\pmod8$ | 6,697 |
-| Split $i_p=4$, $p\equiv1\pmod8$ | 3,359 |
-| Lehmer 1958 check (split, $i_p\in\{2,4\}$) | 23,190 |
-
-SHA-256 of the verifier (also stored inside the evidence directory):
-`7a74db81653b6f4fe5167d7f9d8639e9da2ad92d6cc58d1368f4047abaa9ef96`
 | Split $i_p=4$, $p\equiv5\pmod8$ | 6,697 |
 | Split $i_p=4$, $p\equiv1\pmod8$ | 3,359 |
 | Lehmer 1958 check (split, $i_p\in\{2,4\}$) | 23,190 |
