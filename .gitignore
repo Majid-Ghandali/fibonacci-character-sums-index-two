@@ -56,6 +56,14 @@ results/*
 !results/release-v1.0.1/
 !results/release-v1.0.1/**
 
-# Verified 1.0.1 rerun evidence; keep separate from frozen release-v1.0.1.
+# Rerun evidence produced by script 1.0.1; keep separate from frozen release-v1.0.1.
 !results/ghandali_index2/
 !results/ghandali_index2/**
+
+# ---- v1.0.2 official evidence (must be tracked) ----
+!results/ghandali_index2_v1.0.2/
+!results/ghandali_index2_v1.0.2/**
+# never track run leftovers anywhere under results/
+results/**/archive/
+results/**/*.pkl
+results/**/*.pkl.tmp

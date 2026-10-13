@@ -1,6 +1,8 @@
 cff-version: 1.2.0
 title: "Reproducibility Archive for Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums"
-message: "If you use this software or its output files, please cite the Zenodo software archive and the associated manuscript."
+message: >-
+  If you use this software or its output files, please cite this software
+  record and the associated manuscript (preferred-citation).
 type: software
 
 authors:
@@ -9,14 +11,22 @@ authors:
     orcid: "https://orcid.org/0009-0001-1097-1770"
     affiliation: "Independent Researcher"
 
-version: "1.0.1"
-date-released: "2026-10-09"
-doi: "10.5281/zenodo.23263042"
+version: "1.0.2"
+date-released: "2026-10-13"
+doi: "10.5281/zenodo.23263041"
 url: "https://github.com/Majid-Ghandali/fibonacci-character-sums-index-two"
 repository-code: "https://github.com/Majid-Ghandali/fibonacci-character-sums-index-two"
 license: "MIT"
 
-abstract: "Public reproducibility verifier and machine-readable output files for the manuscript Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums. The verifier checks finite-range evidence for rank-index-two Fibonacci character-sum identities and their reductions to Jacobsthal sums, separating theorem-level checks from exploratory checks and density context."
+abstract: >-
+  Public reproducibility verifier and machine-readable outputs for the
+  manuscript Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums.
+  Version 1.0.2 regenerates finite-range evidence under a clean provenance
+  label (theorem/exploratory separation, signed inert law as theorem-level,
+  SHA256SUMS.txt written after the final log close). Mathematics of Theorems A
+  and B is unchanged from the manuscript proofs. Official evidence directory
+  (full run N=2,000,000, 2026-10-13): results/ghandali_index2_v1.0.2/. The
+  Zenodo DOI below identifies the software archive. A new Zenodo version will be created manually from Git tag v1.0.2 after GitHub release finalization.
 
 keywords:
   - Fibonacci numbers
@@ -31,6 +41,11 @@ keywords:
   - reproducibility
   - Python
 
+identifiers:
+  - type: doi
+    value: "10.5281/zenodo.23263041"
+    description: "Zenodo software archive"
+
 preferred-citation:
   type: article
   title: "Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums"
@@ -40,5 +55,6 @@ preferred-citation:
       orcid: "https://orcid.org/0009-0001-1097-1770"
       affiliation: "Independent Researcher"
   year: 2026
-  doi: "10.5281/zenodo.23264457"
-  url: "https://doi.org/10.5281/zenodo.23264457"
+  status: preprint
+  doi: "10.5281/zenodo.23264456"
+  url: "https://doi.org/10.5281/zenodo.23264456"

@@ -1,33 +1,38 @@
 # Fibonacci Character Sums at Rank Index Two
 
-[![Manuscript DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23264457.svg)](https://doi.org/10.5281/zenodo.23264457)
-[![Code Archive DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23263042.svg)](https://doi.org/10.5281/zenodo.23263042)
+[![Manuscript DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23264456.svg)](https://doi.org/10.5281/zenodo.23264456)
+[![Code Archive DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23263041.svg)](https://doi.org/10.5281/zenodo.23263041)
 [![License: MIT (code)](https://img.shields.io/badge/License-MIT%20(code)-yellow.svg)](LICENSE)
 [![License: CC BY 4.0 (paper)](https://img.shields.io/badge/License-CC%20BY%204.0%20(paper)-lightgrey.svg)](Paper/LICENSE)
 [![Python](https://img.shields.io/badge/Python-3.12.7-blue.svg)](https://www.python.org/)
 
-**Majid Ghandali** Â· Independent Researcher, Tehran, Iran Â· 2026<br>
+**Majid Ghandali** Independent Researcher, Tehran, Iran 2026.
+
 ORCID: [0009-0001-1097-1770](https://orcid.org/0009-0001-1097-1770)
 
 Reproducibility materials for the preprint:
 
 > *Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums*
 
-> **Proof versus computation.** The mathematical results are proved in the manuscript. Computations in this repository provide finite-range verification of the stated identities and reported numerical results; they are not a substitute for the proofs.
+> **Proof versus computation.** Mathematical results are proved in the manuscript.
+> Repository computations provide finite-range verification of stated identities;
+> they are not a substitute for the proofs.
 
 ---
 
 ## Citation and DOI records
 
-The manuscript and the computational release are separate research objects:
-
-| Object | Use | DOI |
+| Object | Role | DOI |
 | --- | --- | --- |
-| Manuscript preprint | Mathematical results and proofs | [10.5281/zenodo.23264457](https://doi.org/10.5281/zenodo.23264457) |
-| Reproducibility archive v1.0.1 | Software, data, and reproducibility reruns | [10.5281/zenodo.23263042](https://doi.org/10.5281/zenodo.23263042) |
+| Manuscript preprint | Theorems, proofs | [10.5281/zenodo.23264456](https://doi.org/10.5281/zenodo.23264456) |
+| Software archive | Verifier + machine-readable evidence | [10.5281/zenodo.23263041](https://doi.org/10.5281/zenodo.23263041) |
 
-- Manuscript citation metadata: [`Paper/CITATION.cff`](Paper/CITATION.cff)
-- Software citation metadata: [`CITATION.cff`](CITATION.cff)
+Software record is maintained **manually** on Zenodo (New version per release).
+A new Zenodo software version will be created manually from Git tag `v1.0.2` after the GitHub release source is finalized.
+
+- Software metadata: [`CITATION.cff`](CITATION.cff), [`.zenodo.json`](.zenodo.json)
+- Manuscript metadata: [`Paper/CITATION.cff`](Paper/CITATION.cff)
+- Release notes: [`CHANGELOG.md`](CHANGELOG.md)
 
 ---
 
@@ -36,341 +41,133 @@ The manuscript and the computational release are separate research objects:
 ```bash
 git clone https://github.com/Majid-Ghandali/fibonacci-character-sums-index-two.git
 cd fibonacci-character-sums-index-two
-
-python -m venv .venv
-source .venv/bin/activate          # macOS/Linux
-# .\.venv\Scripts\Activate.ps1     # Windows PowerShell
-
-python -m pip install --upgrade pip
 python -m pip install -r Requirements.txt
 ```
 
-Run a small smoke verification:
+Smoke test (does not replace the official full run; `--safe` writes to
+`results/_smoke` and can never touch the official evidence directory):
 
 ```bash
-python code/ghandali_verify_index2.py \
-  --limit 10000 \
-  --sum-limit 10000 \
-  --jac-limit 10000 \
-  --workers 1 \
-  --sum-indices 2,4 \
-  --out results/reproduced-smoke-N10000 \
-  --fresh
+python code/ghandali_verify_index2.py --safe --fresh
 ```
 
-A successful run ends with:
+Equivalent explicit form:
+
+```bash
+python code/ghandali_verify_index2.py
+  --limit 10000 --sum-limit 10000 --jac-limit 10000
+  --workers 1 --sum-indices 2,4
+  --out results/reproduced-smoke-N10000 --fresh
+```
+
+Success ends with:
 
 ```text
+script: ghandali_verify_index2.py 1.0.2
 VERDICT: PASS
 theorem mismatches: 0
 ```
 
-Windows PowerShell:
+Windows PowerShell (Python 3.12.x with numpy installed):
 
 ```powershell
-python code\ghandali_verify_index2.py --limit 10000 --sum-limit 10000 --jac-limit 10000 --workers 1 --sum-indices 2,4 --out results\reproduced-smoke-N10000 --fresh
+python code\ghandali_verify_index2.py --safe --fresh
 ```
 
 ---
 
-## Main results (statements only)
+## Official evidence (version policy)
 
-For a prime $p\ne 2,5$, let
+| Version | Evidence directory | Status |
+| --- | --- | --- |
+| 1.0.1 | `results/release-v1.0.1/` and `results/ghandali_index2/` | Historical, do not overwrite. Provenance: `release-v1.0.1` was produced by script 1.0.0 (see its log/summary); `ghandali_index2` is a later 1.0.1 rerun. See `CHANGELOG.md`. |
+| **1.0.2** | `results/ghandali_index2_v1.0.2/` | **Official evidence.** Full run $N=2\cdot10^6$ completed 2026-10-13 (5036 s, Python 3.12.7, numpy 1.26.4); acceptance gate 53/53 passed. |
 
-$$
-\chi_p=\left(\frac{\cdot}{p}\right),\qquad
-\varepsilon_p=\left(\frac{5}{p}\right),\qquad
-n_p=p-\varepsilon_p,
-$$
+Do **not** rewrite 1.0.1 evidence. Mathematics of Theorems A and B is unchanged; 1.0.2 regenerates evidence under clean provenance (log version, theorem labels, `SHA256SUMS.txt` written after the final log close).
 
-and let $z(p)$ be the rank of apparition of $p$ in the Fibonacci sequence. The rank index is
+### Full verification command (official 1.0.2)
 
-$$
-i_p=\frac{n_p}{z(p)}.
-$$
+Start from an empty `results\ghandali_index2_v1.0.2\` (the verifier refuses to
+reuse a directory that already holds a finished run, and refuses N < 2,000,000):
 
-The Fibonacci character sum studied in the paper is
+```powershell
+python code\ghandali_verify_index2.py
+  --limit 2000000 --sum-limit 2000000 --jac-limit 2000000
+  --workers 14 --sum-indices 2,4
+  --out results\ghandali_index2_v1.0.2
+  --fresh
+```
 
-$$
-S(p)=\sum_{j=1}^{z(p)}\chi_p(F_j).
-$$
+Gate after completion:
 
-The paper focuses on the rank-index-two case
+1. Log line: `script: ghandali_verify_index2.py 1.0.2`
+2. `VERDICT: PASS`, `theorem_mismatch_total = 0`
+3. Byte-match of `tested` counts against the 1.0.1 full-run summary for shared theorem keys (mathematics unchanged)
+4. `SHA256SUMS.txt` validates (it also covers the copy of the verifier stored in the directory):
+   `cd results/ghandali_index2_v1.0.2 && sha256sum -c SHA256SUMS.txt`
 
-$$
-i_p=2.
-$$
+All four gates (and more) are automated:
 
-### Split case
+```powershell
+python code\gate_official.py --dir
+results\ghandali_index2_v1.0.2
+  --ref results\ghandali_index2\verification-summary.json
+  --script code\ghandali_verify_index2.py
+```
 
-If $\left(\frac5p\right)=1$ and $i_p=2$, then $p\equiv1\pmod4$. Write
-
-
-$$p=a^2+b^2,\qquad a\ \text{odd},\qquad b\ \text{even},\qquad b>0,$$
-
-
-and let $$a^*\in\{\pm a\}$$ be chosen by
-
-$$
-a^*\equiv1\pmod4.
-$$
-
-Let
-
-$$
-\delta_p=
-\begin{cases}
-1,&p\equiv1\pmod5,\\
--1,&p\equiv4\pmod5.
-\end{cases}
-$$
-
-Then
-
-$$
-S(p)=
-\begin{cases}
-\delta_p a^*,&p\equiv1\pmod8,\\
--\delta_p,&p\equiv5\pmod8.
-\end{cases}
-$$
-
-### Inert case
-
-If $\left(\frac5p\right)=-1$ and $i_p=2$, then $p\equiv1\pmod4$, and
-
-$$
-S(p)=
-\begin{cases}
-\frac12\mathcal J(5)\in\{\pm b\},&p\equiv1\pmod8,\\
-0,&p\equiv5\pmod8,
-\end{cases}
-$$
-
-where
-
-$$
-\mathcal J(c)=\sum_{x\in\mathbb F_p}\chi_p(x)\chi_p(x^2+c)
-$$
-
-is the classical Jacobsthal sum.
-
-For the full hypotheses, reductions, lemmas, and proofs, see [`Paper/ghandali_index2.tex`](Paper/ghandali_index2.tex).
-
----
-
-## Verification headline (committed evidence)
-
-Reported release run through $p\le 2{,}000{,}000$:
+Headline counts at $N=2\cdot10^6$, confirmed by the official 1.0.2 run (2026-10-13; Python 3.12.7, numpy 1.26.4; runtime 5036 s; acceptance gate 53/53):
 
 | Quantity | Value |
 | --- | ---: |
-| Prime limit $N$ | 2,000,000 |
-| Primes in rank inventory | 148,931 |
-| Direct $S(p)$ and Jacobsthal record rows selected | 52,477 |
-| Split index-two primes, $p\equiv1\pmod8$ | 6,551 |
-| Split index-two primes, $p\equiv5\pmod8$ | 6,583 |
-| Inert index-two primes, $p\equiv1\pmod8$ | 14,591 |
-| Inert index-two primes, $p\equiv5\pmod8$ | 14,696 |
-| Theorem-level mismatches | **0** |
-| Exploratory mismatches | **0** |
+| Rank inventory primes | 148,931 |
+| Direct $S(p)$ records | 52,477 |
+| Split $i_p=2$, $p\equiv1\pmod8$ | 6,551 |
+| Split $i_p=2$, $p\equiv5\pmod8$ | 6,583 |
+| Inert $i_p=2$, $p\equiv1\pmod8$ | 14,591 |
+| Inert $i_p=2$, $p\equiv5\pmod8$ | 14,696 |
+| Split $i_p=4$, $p\equiv5\pmod8$ | 6,697 |
+| Split $i_p=4$, $p\equiv1\pmod8$ | 3,359 |
+| Lehmer 1958 check (split, $i_p\in\{2,4\}$) | 23,190 |
 
-Authoritative machine-readable summary:
+SHA-256 of the verifier (also stored inside the evidence directory):
+`7a74db81653b6f4fe5167d7f9d8639e9da2ad92d6cc58d1368f4047abaa9ef96`
+| Split $i_p=4$, $p\equiv5\pmod8$ | 6,697 |
+| Split $i_p=4$, $p\equiv1\pmod8$ | 3,359 |
+| Lehmer 1958 check (split, $i_p\in\{2,4\}$) | 23,190 |
 
-```text
-results/release-v1.0.1/verification-summary.json
-```
-
-Run log:
-
-```text
-results/release-v1.0.1/verification-run.log
-```
-
-These are finite computational results offered as consistency evidence, not as numerical proofs.
+SHA-256 of the verifier (also stored inside the evidence directory):
+`7a74db81653b6f4fe5167d7f9d8639e9da2ad92d6cc58d1368f4047abaa9ef96`
 
 ---
 
 ## Verification scope
 
-The verifier separates three layers:
-
 | Layer | Role |
 | --- | --- |
-| Theorem-level checks | Finite-range verification of identities proved in the manuscript |
-| Exploratory checks | Open-pattern checks and auxiliary observations not claimed as theorems |
-| Density context | Numerical ratios recorded as context only, not finite proofs of density statements |
-
-The density computations in the output files are not used as proofs. In particular, the inert density statement in the manuscript is recorded as a GRH-conditional corollary from the work of Roskam and Chen, not as a conclusion drawn from finite computation.
-
----
-
-## What the program computes
-
-| Symbol / quantity | Meaning |
-| --- | --- |
-| $z(p)$ | Rank of apparition of $p$ in the Fibonacci sequence |
-| $i_p$ | Rank index $(p-(5/p))/z(p)$ |
-| $S(p)$ | Fibonacci character sum $\sum_{j=1}^{z(p)}\chi_p(F_j)$ |
-| $\mathcal J(c)$ | Jacobsthal sum $\sum_{x\in\mathbb F_p}\chi_p(x)\chi_p(x^2+c)$ |
-| $a^*,b$ | Two-square parameters for $p=a^2+b^2$, $a^*\equiv1\pmod4$ |
-| $\delta_p$ | Split sign determined by $p\bmod 5$ |
-| density ratios | Contextual numerical ratios relative to Artin's constant |
-
-The program records rank-index inventories, direct Fibonacci character sums for selected rank indices, direct Jacobsthal sums where required, theorem-level mismatch counts, exploratory mismatch counts, numerical tables, and contextual density data.
-
----
-
-## Full verification command
-
-The archived release run used the public release script:
-
-```bash
-python code/ghandali_verify_index2.py \
-  --limit 2000000 \
-  --sum-limit 2000000 \
-  --jac-limit 2000000 \
-  --workers 14 \
-  --sum-indices 2,4 \
-  --out results/release-v1.0.1 \
-  --fresh
-```
-
-Windows PowerShell:
-
-```powershell
-python code\ghandali_verify_index2.py --limit 2000000 --sum-limit 2000000 --jac-limit 2000000 --workers 14 --sum-indices 2,4 --out results\release-v1.0.1 --fresh
-```
-
-The release run completed with:
-
-```text
-VERDICT: PASS
-theorem mismatches: 0
-exploratory mismatches: 0
-```
-
-For new local reruns, always use a new output directory, for example:
-
-```bash
-python code/ghandali_verify_index2.py \
-  --limit 2000000 \
-  --sum-limit 2000000 \
-  --jac-limit 2000000 \
-  --workers 14 \
-  --sum-indices 2,4 \
-  --out results/reproduced-N2000000 \
-  --fresh
-```
-
-Do **not** overwrite `results/release-v1.0.1/`.
-
-Full CLI help:
-
-```bash
-python code/ghandali_verify_index2.py --help
-```
-
----
-
-## Frozen reproducibility release (v1.0.1)
-
-Canonical software release: **v1.0.1**<br>
-Executable artifact: [`code/ghandali_verify_index2.py`](code/ghandali_verify_index2.py)
-
-Official evidence bundle:
-
-```text
-results/release-v1.0.1/
-```
-
-This directory is checksum-recorded release evidence. Do **not** rename files in it, normalize its line endings, edit it, or overwrite it with a new rerun.
-
-Authoritative records:
-
-```text
-results/release-v1.0.1/SHA256SUMS.txt
-results/release-v1.0.1/verification-summary.json
-results/release-v1.0.1/verification-run.log
-```
-
-Additional archived outputs:
-
-```text
-results/release-v1.0.1/rank-index-all-primes.csv
-results/release-v1.0.1/ghandali-index2-records.csv
-results/release-v1.0.1/numerical-table.csv
-results/release-v1.0.1/numerical-table.tex
-results/release-v1.0.1/verification-workbook.xlsx
-```
-
-Fresh local smoke test:
-
-```bash
-python code/ghandali_verify_index2.py \
-  --limit 10000 \
-  --sum-limit 10000 \
-  --jac-limit 10000 \
-  --workers 1 \
-  --sum-indices 2,4 \
-  --out results/reproduced-smoke-N10000 \
-  --fresh
-```
-
-### Integrity verification
-
-From the repository root, if GNU `sha256sum` is available:
-
-```bash
-sha256sum -c results/release-v1.0.1/SHA256SUMS.txt
-```
-
-Windows PowerShell example for a single file:
-
-```powershell
-Get-FileHash code\ghandali_verify_index2.py -Algorithm SHA256
-# Compare the digest with the corresponding line in results\release-v1.0.1\SHA256SUMS.txt
-```
-
-The official executable digest and output-file digests are recorded in the checksum manifest. Do not clean or rewrite release evidence to satisfy cosmetic checks; integrity is defined by `SHA256SUMS.txt`.
+| Theorem-level | Finite-range checks of identities proved in the manuscript (including signed inert law, index-four vanishing/parity) |
+| Exploratory | Observations not claimed as theorems |
+| Density context | Numerical ratios only; inert $10A/19$ is GRH-conditional (Roskam--Chen), not proved by the finite run |
 
 ---
 
 ## Repository layout
 
 ```text
-Paper/                               manuscript files (CC BY 4.0): TeX, BibTeX, PDF, LICENSE, CITATION.cff
-code/ghandali_verify_index2.py        frozen executable for release v1.0.1
-results/release-v1.0.1/               frozen, checksum-recorded release evidence
-results/reproduced-*/                 optional local reruns, not part of the frozen release
-docs/reproducibility.md               optional reproduction notes
-LICENSE                               MIT license for code and computational materials
-Paper/LICENSE                         CC BY 4.0 license for manuscript text
-LICENSES.md                           scope of the two licenses
-CITATION.cff                          software citation metadata
-Requirements.txt                      Python environment notes
-README.md                             repository overview
-```
-
----
-
-## Requirements
-
-- Tested release environment: **Python 3.12.7**
-- The verifier is written in Python.
-- If `Requirements.txt` lists no third-party packages, the verifier uses only the Python standard library.
-
-Install the repository requirements, if any:
-
-```bash
-python -m pip install -r Requirements.txt
+Paper/                         manuscript (CC BY 4.0)
+code/ghandali_verify_index2.py verifier (MIT), version 1.0.2
+code/gate_official.py          post-run acceptance gate
+results/ghandali_index2_v1.0.2/  official evidence after full run
+CITATION.cff                   software citation
+.zenodo.json                   Zenodo metadata (manual deposit)
+CHANGELOG.md                   version history
+Requirements.txt               numpy (the only third-party dependency)
+LICENSE                        MIT (code/results)
+Paper/LICENSE                  CC BY 4.0 (manuscript)
 ```
 
 ---
 
 ## Manuscript compilation
-
-Source: [`Paper/ghandali_index2.tex`](Paper/ghandali_index2.tex)
 
 ```bash
 cd Paper
@@ -380,65 +177,24 @@ pdflatex -interaction=nonstopmode ghandali_index2.tex
 pdflatex -interaction=nonstopmode ghandali_index2.tex
 ```
 
-A TeX Live or MiKTeX installation providing the packages declared in the source is required.
-
----
-
-## BibTeX
-
-**Manuscript**
-
-```bibtex
-@misc{Ghandali2026IndexTwoPreprint,
-  author       = {Ghandali, Majid},
-  title        = {Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums},
-  year         = {2026},
-  version      = {v1.0.0-preprint},
-  publisher    = {Zenodo},
-  doi          = {10.5281/zenodo.23264457},
-  url          = {https://doi.org/10.5281/zenodo.23264457}
-}
-```
-
-**Software / reproducibility archive**
-
-```bibtex
-@misc{Ghandali2026IndexTwoArchive,
-  author       = {Ghandali, Majid},
-  title        = {Reproducibility Archive for Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums},
-  year         = {2026},
-  version      = {1.0.1},
-  publisher    = {Zenodo},
-  doi          = {10.5281/zenodo.23263042},
-  url          = {https://doi.org/10.5281/zenodo.23263042}
-}
-```
+Or: `.\compile.ps1` from the repository root.
 
 ---
 
 ## License
 
-This repository uses a deliberate dual-license structure:
+| Content | License |
+| --- | --- |
+| Code, scripts, verification outputs | MIT |
+| Manuscript text, bibliography, PDF | CC BY 4.0 |
 
-| Content | Path | License |
-| --- | --- | --- |
-| Code, scripts, verification outputs, and computational artifacts | Root [`LICENSE`](LICENSE); `code/`, `results/`, â€¦ | **MIT** |
-| Manuscript text, bibliography, and PDF | [`Paper/`](Paper/); [`Paper/LICENSE`](Paper/LICENSE) | **CC BY 4.0** |
-
-Full scope statement: [`LICENSES.md`](LICENSES.md).
+See [`LICENSES.md`](LICENSES.md).
 
 ---
 
 ## Author
 
-**Majid Ghandali**<br>
-Independent Researcher, Tehran, Iran<br>
-Email: [majid.ghandali@gmail.com](mailto:majid.ghandali@gmail.com)<br>
+**Majid Ghandali**
+Independent Researcher, Tehran, Iran
+Email: majid.ghandali@gmail.com
 ORCID: [0009-0001-1097-1770](https://orcid.org/0009-0001-1097-1770)
-
-
-## Verified rerun evidence (1.0.1)
-
-The directory `results/ghandali_index2/` records a verified rerun using `code/ghandali_verify_index2.py` version `1.0.1` with the parameters recorded in `verification-run.log`. Its `SHA256SUMS.txt` validates the verifier and all listed output files.
-
-This rerun evidence is kept separate from `results/release-v1.0.1/`. The latter remains unchanged as historical frozen evidence with its own recorded provenance.

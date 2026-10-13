@@ -1,0 +1,296 @@
+{
+  "metadata": {
+    "title": "Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums",
+    "author": "Majid Ghandali",
+    "script": "ghandali_verify_index2.py",
+    "version": "1.0.2",
+    "generated_at": "2026-10-13T04:39:32",
+    "limit": 2000000,
+    "sum_limit": 2000000,
+    "jac_limit": 2000000,
+    "workers": 14,
+    "rank_chunk": 5000,
+    "checkpoint_every": 25,
+    "sum_indices": [
+      2,
+      4
+    ],
+    "sums_enabled": true,
+    "jacobsthal_enabled": true,
+    "xlsx_enabled": true
+  },
+  "verdict": "PASS",
+  "theorem_mismatch_total": 0,
+  "exploratory_mismatch_total": 0,
+  "runtime_seconds": 5036.393117904663,
+  "density_context_not_theorem": {
+    "claim_status": "context_only_not_a_theorem_check",
+    "primes_counted": 148931,
+    "full_rank_over_A": 1.0012817757311254,
+    "full_rank_split_over_A": 0.47414772441014674,
+    "full_rank_inert_over_A": 0.5271340513209788,
+    "context_pred_full_rank_split_over_A_CONDITIONAL": 0.47368421052631576,
+    "context_pred_full_rank_inert_over_A_CONDITIONAL": 0.5263157894736842,
+    "index2_split_over_A": 0.23582596328257155,
+    "index2_inert_over_A": 0.5258592193282071,
+    "context_pred_index2_split_over_A_CONJECTURAL": 0.23684210526315788,
+    "context_pred_index2_inert_over_A_DIRICHLET_CONDITIONAL": 0.5263157894736842,
+    "index2_counts_by_p_mod_8": {
+      "split": {
+        "1": 6551,
+        "5": 6583
+      },
+      "inert": {
+        "1": 14591,
+        "5": 14696
+      }
+    },
+    "index4_counts_by_p_mod_8": {
+      "split": {
+        "1": 3359,
+        "5": 6697
+      },
+      "inert": {}
+    },
+    "count_by_index_first20": {
+      "1": 55765,
+      "2": 42421,
+      "3": 9911,
+      "4": 10056,
+      "5": 2807,
+      "6": 7543,
+      "7": 1324,
+      "8": 2436,
+      "9": 1103,
+      "10": 1432,
+      "11": 496,
+      "12": 1707,
+      "13": 362,
+      "14": 1059,
+      "15": 482,
+      "16": 619,
+      "17": 202,
+      "18": 847,
+      "19": 172,
+      "20": 1072
+    }
+  },
+  "theorem_checks": {
+    "rank_index_integrality_z_times_i_eq_n": {
+      "tested": 148931,
+      "matches": 148931,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "index_parity_i_even_iff_p_1mod4": {
+      "tested": 148931,
+      "matches": 148931,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "odd_z_chi_F_z_plus_1_eq_2_over_p": {
+      "tested": 49618,
+      "matches": 49618,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "quartic_5_eq_minus_delta_times_2_over_p_split_idx2": {
+      "tested": 13134,
+      "matches": 13134,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "reflection_odd_z_p1mod4_and_S_eq_2overp_times_S": {
+      "tested": 35984,
+      "matches": 35984,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "reflection_odd_z_p5mod8_S_eq_0": {
+      "tested": 21393,
+      "matches": 21393,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "thmA_split_idx2_p1mod8_S_eq_delta_astar": {
+      "tested": 6551,
+      "matches": 6551,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "thmA_split_idx2_p5mod8_S_eq_minus_delta": {
+      "tested": 6583,
+      "matches": 6583,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "jacobsthal_Jm1_eq_minus_2_times_2overp_times_astar_idx2_p1mod4": {
+      "tested": 42421,
+      "matches": 42421,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "split_reduction_p1mod8_S_eq_quartic5_half_Jm1": {
+      "tested": 6551,
+      "matches": 6551,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "split_reduction_p5mod8_S_eq_minus_quartic5": {
+      "tested": 6583,
+      "matches": 6583,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "thmB_inert_idx2_p1mod8_abs_S_eq_b": {
+      "tested": 14591,
+      "matches": 14591,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "thmB_inert_idx2_p1mod8_2S_eq_J5": {
+      "tested": 14591,
+      "matches": 14591,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "thmB_inert_idx2_p1mod8_J5_eq_Jm5": {
+      "tested": 14591,
+      "matches": 14591,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "thmB_inert_idx2_p5mod8_S_eq_0": {
+      "tested": 14696,
+      "matches": 14696,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "thmB_inert_idx2_p1mod8_sign_rule_mod5": {
+      "tested": 14591,
+      "matches": 14591,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "lehmer1958_quartic5_iff_5_divides_b_split": {
+      "tested": 23190,
+      "matches": 23190,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "cor35_split_idx4_p5mod8_S_eq_0": {
+      "tested": 6697,
+      "matches": 6697,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "lemma31_split_idx4_p1mod8_S_odd": {
+      "tested": 3359,
+      "matches": 3359,
+      "mismatch": 0,
+      "first_mismatches": []
+    }
+  },
+  "exploratory_checks": {
+    "exploratory_inert_idx2_p1mod8_J10_eq_quartic2_J5": {
+      "tested": 14591,
+      "matches": 14591,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "exploratory_inert_idx2_p1mod8_abs_Jpm10_eq_2absS": {
+      "tested": 14591,
+      "matches": 14591,
+      "mismatch": 0,
+      "first_mismatches": []
+    },
+    "exploratory_split_idx4_p1mod8_max_absS_over_sqrtp": {
+      "tested": 3359,
+      "value": 0.502683773697118,
+      "claim_status": "exploratory_bound_observation_only"
+    }
+  },
+  "paper_table": [
+    {
+      "category": "THEOREM",
+      "name": "thmA_split_idx2_p1mod8_S_eq_delta_astar",
+      "statement": "split i_p=2, p=1 mod 8: S=delta_p a*",
+      "tested": 6551,
+      "matches": 6551,
+      "mismatches": 0,
+      "status": "proved-claim-check"
+    },
+    {
+      "category": "THEOREM",
+      "name": "thmA_split_idx2_p5mod8_S_eq_minus_delta",
+      "statement": "split i_p=2, p=5 mod 8: S=-delta_p",
+      "tested": 6583,
+      "matches": 6583,
+      "mismatches": 0,
+      "status": "proved-claim-check"
+    },
+    {
+      "category": "THEOREM",
+      "name": "thmB_inert_idx2_p1mod8_abs_S_eq_b",
+      "statement": "inert i_p=2, p=1 mod 8: |S|=b",
+      "tested": 14591,
+      "matches": 14591,
+      "mismatches": 0,
+      "status": "proved-claim-check"
+    },
+    {
+      "category": "THEOREM",
+      "name": "thmB_inert_idx2_p1mod8_2S_eq_J5",
+      "statement": "inert i_p=2, p=1 mod 8: 2S=Jac(5)",
+      "tested": 14591,
+      "matches": 14591,
+      "mismatches": 0,
+      "status": "proved-claim-check-where-J-computed"
+    },
+    {
+      "category": "THEOREM",
+      "name": "thmB_inert_idx2_p5mod8_S_eq_0",
+      "statement": "inert i_p=2, p=5 mod 8: S=0",
+      "tested": 14696,
+      "matches": 14696,
+      "mismatches": 0,
+      "status": "proved-claim-check"
+    },
+    {
+      "category": "THEOREM",
+      "name": "thmB_inert_idx2_p1mod8_sign_rule_mod5",
+      "statement": "inert i_p=2, p=1 mod 8: S in {+/-b}, S == -a* mod 5",
+      "tested": 14591,
+      "matches": 14591,
+      "mismatches": 0,
+      "status": "proved-claim-check"
+    },
+    {
+      "category": "THEOREM",
+      "name": "cor35_split_idx4_p5mod8_S_eq_0",
+      "statement": "split i_p=4, p=5 mod 8: S=0 (Cor. 3.5)",
+      "tested": 6697,
+      "matches": 6697,
+      "mismatches": 0,
+      "status": "proved-claim-check"
+    },
+    {
+      "category": "THEOREM",
+      "name": "lemma31_split_idx4_p1mod8_S_odd",
+      "statement": "split i_p=4, p=1 mod 8: S odd (Lemma 3.1)",
+      "tested": 3359,
+      "matches": 3359,
+      "mismatches": 0,
+      "status": "proved-claim-check"
+    },
+    {
+      "category": "THEOREM",
+      "name": "lehmer1958_quartic5_iff_5_divides_b_split",
+      "statement": "split: (5/p)_4 = 1 iff 5 | b (E. Lehmer 1958)",
+      "tested": 23190,
+      "matches": 23190,
+      "mismatches": 0,
+      "status": "proved-claim-check"
+    }
+  ]
+}

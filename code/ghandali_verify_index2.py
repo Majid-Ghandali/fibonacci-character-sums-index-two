@@ -1,7 +1,6 @@
-
 # ghandali_verify_index2.py
 """
-ghandali_verify_index2.py  (1.0.1)
+ghandali_verify_index2.py  (1.0.2)
 
 Reproducibility verifier for:
 
@@ -11,11 +10,30 @@ Reproducibility verifier for:
 Main corrections and upgrades
 -----------------------------
 1. Separates THEOREM checks from EXPLORATORY checks.
-   (Signed inert law S ≡ -a* (mod 5) is a THEOREM check.)
-2. Keeps density diagnostics as context only, not theorem claims.
-3. Shows long-running progress as a single-line loading bar.
-4. Provides an interactive UI when run without command-line arguments.
-5. Supports checkpoint/resume for large runs.
+   (Signed inert law S == -a* (mod 5) is a THEOREM check.)
+2. Index-four vanishing (split, p==5 mod 8) and index-four parity
+   (split, p==1 mod 8) are THEOREM checks (Cor. 3.5 / Lemma 3.1).
+3. Density context keys distinguish conjectural split weights from the
+   GRH-conditional inert Dirichlet density 10A/19.
+4. Logs python/numpy/platform, script sha-256, and argv; writes sha256sums.txt.
+5. Checkpoints bind to script_version + script_sha256.
+6. Progress bar, interactive UI, resume, atomic checkpoints.
+7. 1.0.2: single-line progress bar clipped to terminal width (no
+   wrapping); pipe-safe progress (one line per 10 %); checkpoint_format
+   f-string fix; summary key 'jacobsthal_enabled'; interactive default
+   workers = logical CPUs - 2; write_manifest no longer leaves sha256sums
+   empty (append was unreachable under continue); SAFE mode writes to
+   results/_smoke so official results/ghandali_index2_v1.0.2 is reserved
+   for the controlled full run. Mathematics and checks unchanged.
+8. 1.0.2 (final hardening, no change to any mathematical check):
+   --safe without --out now writes to results/_smoke (previously it wrote
+   to the official directory); --safe can never target the official
+   directory; the official directory refuses to be reused once it holds a
+   finished run (verification-summary.json) and refuses runs with
+   N < 2,000,000 unless --force-official is given; the verifier copies
+   itself into the output directory so sha256sums.txt also covers the exact
+   script that produced the evidence; interactive modes no longer default
+   to the official directory for N < 2,000,000.
 
 Usage
 -----
@@ -41,7 +59,7 @@ Resume automatically if checkpoint exists:
 
 Requirements
 ------------
-Python 3.9+ and numpy.
+Python 3.12.7 (tested) with numpy>=1.26.4,<2.
 
 License
 -------
@@ -67,17 +85,20 @@ import datetime as _dt
 import hashlib
 import json
 import math
+import platform
 import pickle
 import shutil
 import sys
-import time
 from multiprocessing import Pool, cpu_count, freeze_support
 from pathlib import Path
 
 import numpy as np
 
 
-VERSION = "1.0.1"
+VERSION = "1.0.2"
+OFFICIAL_OUT = f"results/ghandali_index2_v{VERSION}"
+SMOKE_OUT = "results/_smoke"
+OFFICIAL_MIN_LIMIT = 2_000_000
 TITLE = "Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums"
 AUTHOR = "Majid Ghandali"
 
@@ -205,7 +226,7 @@ def two_square_data(p):
 
 
 # ============================================================
-# Direct sums
+# Direct Sums
 # ============================================================
 
 def chi_table_numpy(p):
@@ -259,76 +280,123 @@ def jacobsthal_sum(p, c, chunk=1_000_000):
     return int(total)
 
 
+
 # ============================================================
 # Progress bar
 # ============================================================
 
+_ACTIVE_BAR = None
+
+
 class ProgressBar:
+
     def __init__(self, label, total, width=42, enabled=True):
+        global _ACTIVE_BAR
         self.label = str(label)
         self.total = int(total)
-        self.width = int(width)
+        self.max_width = int(width)
         self.enabled = bool(enabled and self.total >= 0)
         self.start = time.time()
         self.last_draw = 0.0
-        self.last_len = 0
         self.finished = False
+        self.on_screen = False
+        self.last_decile = -1
+        try:
+            self.is_tty = bool(sys.stdout.isatty())
+        except Exception:
+            self.is_tty = False
 
         enc = (getattr(sys.stdout, "encoding", None) or "").lower()
-        if "utf" in enc:
-            self.fill = "█"
-            self.empty = "░"
+        self.utf = "utf" in enc
+        if self.utf:
+            self.fill, self.empty = "\u2588", "\u2591"
         else:
-            self.fill = "#"
-            self.empty = "-"
+            self.fill, self.empty = "#", "-"
+
+        if self.enabled:
+            _ACTIVE_BAR = self
+
+    @staticmethod
+    def _columns():
+        try:
+            return max(20, shutil.get_terminal_size((80, 24)).columns)
+        except Exception:
+            return 80
+
+    def _compose(self, done, note, now, cols):
+        frac = 1.0 if self.total <= 0 else max(0.0, min(1.0, done / self.total))
+        pct = 100.0 * frac
+        elapsed = now - self.start
+        rate = f"{done / elapsed:.1f}/s" if done > 0 and elapsed > 0 else "--/s"
+
+        eta = ""
+        if 0 < done < self.total and elapsed > 0:
+            m, s = divmod(int((self.total - done) * elapsed / done), 60)
+            h, m = divmod(m, 60)
+            eta = f"  ETA {h:d}:{m:02d}:{s:02d}"
+
+        note = str(note or "")
+        if not self.utf:
+            note = note.replace("\u2264", "<=").encode("ascii", "replace").decode()
+
+        tw = len(str(self.total))
+        left = f"{self.label:<14} |"
+        right = f"| {pct:6.2f}%  {done:>{tw}d}/{self.total}  {rate}{eta}"
+        if note:
+            right += "  " + note
+
+        avail = cols - 1                     # never write into the last column
+        bar_w = min(self.max_width, avail - len(left) - len(right))
+        if bar_w < 10:                       # narrow console: drop extras
+            right = f"| {pct:6.2f}%  {done}/{self.total}"
+            bar_w = min(self.max_width, avail - len(left) - len(right))
+        bar_w = max(0, bar_w)
+
+        filled = int(round(bar_w * frac))
+        bar = self.fill * filled + self.empty * (bar_w - filled)
+        return (left + bar + right)[:avail], pct
 
     def update(self, done, note="", force=False):
         if not self.enabled or self.finished:
             return
-
         done = int(done)
         now = time.time()
         if not force and now - self.last_draw < 0.15 and done < self.total:
             return
         self.last_draw = now
 
-        if self.total <= 0:
-            frac = 1.0
+        cols = self._columns()
+        line, pct = self._compose(done, note, now, cols)
+
+        if self.is_tty:
+            sys.stdout.write("\r" + line.ljust(cols - 1))
+            self.on_screen = True
         else:
-            frac = max(0.0, min(1.0, done / self.total))
-
-        filled = int(round(self.width * frac))
-        bar = self.fill * filled + self.empty * (self.width - filled)
-        pct = 100.0 * frac
-        elapsed = now - self.start
-
-        if done > 0 and elapsed > 0:
-            rate = done / elapsed
-            rate_text = f"{rate:.1f}/s"
-        else:
-            rate_text = "--/s"
-
-        note = str(note or "")
-        if len(note) > 34:
-            note = note[:31] + "..."
-
-        line = (
-            f"\r{self.label:<14} |{bar}| "
-            f"{pct:6.2f}%  {done:>7d}/{self.total:<7d}  "
-            f"{rate_text:<10s} {note}"
-        )
-        pad = " " * max(0, self.last_len - len(line))
-        sys.stdout.write(line + pad)
+            decile = int(pct // 10)
+            if decile == self.last_decile and not force:
+                return
+            self.last_decile = decile
+            sys.stdout.write(line + "\n")
         sys.stdout.flush()
-        self.last_len = len(line)
+
+    def clear(self):
+        """Erase the bar so that an ordinary print() does not mix with it."""
+        if self.enabled and self.is_tty and self.on_screen and not self.finished:
+            sys.stdout.write("\r" + " " * (self._columns() - 1) + "\r")
+            sys.stdout.flush()
+            self.on_screen = False
 
     def finish(self, note="done"):
+        global _ACTIVE_BAR
         if not self.enabled or self.finished:
             return
         self.update(self.total, note=note, force=True)
-        sys.stdout.write("\n")
-        sys.stdout.flush()
+        if self.is_tty:
+            sys.stdout.write("\n")
+            sys.stdout.flush()
         self.finished = True
+        if _ACTIVE_BAR is self:
+            _ACTIVE_BAR = None
 
 
 # ============================================================
@@ -343,6 +411,28 @@ def sha256_file(path):
     return h.hexdigest().upper()
 
 
+def write_manifest(out_dir):
+    out_dir = Path(out_dir)
+    manifest = out_dir / "sha256sums.txt"
+    lines = []
+    for p in sorted(out_dir.rglob("*")):
+        if not p.is_file():
+            continue
+        rel = p.relative_to(out_dir).as_posix()
+        if (
+            rel == "sha256sums.txt"
+            or rel.startswith("archive/")
+            or rel.endswith(".pkl")
+            or rel.endswith(".pkl.tmp")
+        ):
+            continue
+        lines.append("%s  %s" % (sha256_file(p).lower(), rel))
+    with open(manifest, "w", encoding="utf-8", newline=chr(10)) as fh:
+        fh.write(chr(10).join(lines) + chr(10))
+    return manifest
+
+
+
 class Logger:
     def __init__(self, path):
         self.path = Path(path)
@@ -350,6 +440,8 @@ class Logger:
 
     def __call__(self, msg):
         line = str(msg)
+        if _ACTIVE_BAR is not None:
+            _ACTIVE_BAR.clear()
         print(line, flush=True)
         self.fh.write(line + "\n")
         self.fh.flush()
@@ -362,7 +454,7 @@ def archive_existing_outputs(out_dir):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    suffixes = {".json", ".csv", ".tex", ".log", ".xlsx"}
+    suffixes = {".json", ".csv", ".tex", ".log", ".xlsx", ".txt"}
     existing = [
         p for p in out_dir.iterdir()
         if p.is_file() and p.suffix.lower() in suffixes
@@ -372,6 +464,10 @@ def archive_existing_outputs(out_dir):
 
     stamp = _dt.datetime.now().strftime("%Y%m%d-%H%M%S")
     arch = out_dir / "archive" / stamp
+    k = 0
+    while arch.exists():
+        k += 1
+        arch = out_dir / "archive" / f"{stamp}-{k}"
     arch.mkdir(parents=True, exist_ok=False)
 
     for p in existing:
@@ -384,12 +480,19 @@ def archive_existing_outputs(out_dir):
 # ============================================================
 
 def checkpoint_path(out_dir):
-    return Path(out_dir) / "checkpoint-ghandali-index2.pkl"
+    # Checkpoint is a trusted local file only (not for network exchange).
+    return Path(out_dir) / "checkpoint_ghandali_index2.pkl"
 
 
 def make_checkpoint_meta(args, sum_indices):
+    try:
+        _script_sha = hashlib.sha256(Path(__file__).resolve().read_bytes()).hexdigest()
+    except OSError:
+        _script_sha = "unavailable"
     return {
-        "checkpoint_format": "ghandali-index2-v1",
+        "checkpoint_format": f"ghandali_index2_v{VERSION}",
+        "script_version": VERSION,
+        "script_sha256": _script_sha,
         "limit": int(args.limit),
         "sum_limit": int(args.sum_limit),
         "jac_limit": int(args.jac_limit),
@@ -515,17 +618,18 @@ def interactive_setup_argv():
     print("Modes:")
     print("  1) SAFE smoke test")
     print("  2) Standard verification")
-    print("  3) Rank/density inventory only -- no direct S sums")
+    print("  3) Rank/density inventory only -- no direct S Sums")
     print("  4) Custom")
     print()
 
     mode = _ask_choice("Select mode", ["1", "2", "3", "4"], "2")
     argv = []
 
-    out_default = "results-ghandali-index2"
+    out_default = OFFICIAL_OUT
 
     if mode == "1":
-        argv += ["--safe", "--out", out_default]
+        # Smoke must never land in the official versioned evidence directory.
+        argv += ["--safe", "--out", "results/_smoke"]
         return argv
 
     if mode == "2":
@@ -535,11 +639,11 @@ def interactive_setup_argv():
 
         print()
         print("Worker guidance:")
-        print("  workers=1 is safest on laptops.")
+        print("  workers=1 is safest on laptops; default = auto (logical CPUs - 2).")
         print(f"  auto suggestion for this system: {_cpu_default()}")
         workers = _ask_int(
             "Worker processes for rank inventory",
-            1,
+            _cpu_default(),
             minimum=1,
             maximum=max(1, (os.cpu_count() or 4) * 2),
         )
@@ -547,7 +651,8 @@ def interactive_setup_argv():
         indices_raw = input("Rank indices to compute direct S for [2,4]: ").strip()
         indices = indices_raw if indices_raw else "2,4"
 
-        out = input(f"Output directory [{out_default}]: ").strip() or out_default
+        out_def = out_default if limit >= OFFICIAL_MIN_LIMIT else f"results/reproduced-N{limit}"
+        out = input(f"Output directory [{out_def}]: ").strip() or out_def
 
         argv += [
             "--limit", str(limit),
@@ -567,7 +672,8 @@ def interactive_setup_argv():
             minimum=1,
             maximum=max(1, (os.cpu_count() or 4) * 2),
         )
-        out = input(f"Output directory [{out_default}]: ").strip() or out_default
+        out_def = out_default if limit >= OFFICIAL_MIN_LIMIT else f"results/reproduced-N{limit}"
+        out = input(f"Output directory [{out_def}]: ").strip() or out_def
 
         argv += [
             "--limit", str(limit),
@@ -581,14 +687,15 @@ def interactive_setup_argv():
     limit = _ask_int("Prime limit N", 1_000_000, minimum=100)
     sum_limit = _ask_int("Direct S(p) limit", limit, minimum=0, maximum=limit)
     jac_limit = _ask_int("Jacobsthal direct-check limit", min(200_000, limit), minimum=0, maximum=limit)
-    workers = _ask_int("Worker processes", 1, minimum=1, maximum=max(1, (os.cpu_count() or 4) * 2))
+    workers = _ask_int("Worker processes", _cpu_default(), minimum=1, maximum=max(1, (os.cpu_count() or 3) - 2))
     rank_chunk = _ask_int("Rank checkpoint chunk size", 5000, minimum=100)
     ckpt_every = _ask_int("Checkpoint every K units", 25, minimum=1)
     indices_raw = input("Rank indices to compute direct S for [2,4]: ").strip()
     indices = indices_raw if indices_raw else "2,4"
-    out = input(f"Output directory [{out_default}]: ").strip() or out_default
+    out_def = out_default if limit >= OFFICIAL_MIN_LIMIT else f"results/reproduced-N{limit}"
+    out = input(f"Output directory [{out_def}]: ").strip() or out_def
 
-    no_jac = _ask_choice("Disable Jacobsthal sums?", ["y", "n"], "n")
+    no_jac = _ask_choice("Disable Jacobsthal Sums?", ["y", "n"], "n")
     no_progress = _ask_choice("Disable progress bars?", ["y", "n"], "n")
 
     argv += [
@@ -719,8 +826,10 @@ def build_sum_record(row, small_primes, args):
 
     if ip == 2:
         rec["classification"] = "THEOREM-index-two"
-    elif ip == 4:
-        rec["classification"] = "EXPLORATORY-index-four"
+    elif ip == 4 and eps5 == 1 and p % 8 == 5:
+        rec["classification"] = "THEOREM-index-four-p5mod8"  # Cor. 3.5(b)
+    elif ip == 4 and eps5 == 1 and p % 8 == 1:
+        rec["classification"] = "THEOREM-parity-index-four-p1mod8"  # Lemma 3.1
     else:
         rec["classification"] = "computed"
 
@@ -919,6 +1028,14 @@ def aggregate_checks(R, recs):
     )
 
     chk_rec(
+        theorem,
+        "lehmer1958_quartic5_iff_5_divides_b_split",
+        pick(eps=1, pmod4=1),
+        lambda r: r.get("b") is not None
+        and (quartic_symbol(5, r["p"]) == 1) == (r["b"] % 5 == 0),
+    )
+
+    chk_rec(
         exploratory,
         "exploratory_inert_idx2_p1mod8_J10_eq_quartic2_J5",
         pick(index=2, eps=-1, m8=1, need="J10"),
@@ -933,16 +1050,16 @@ def aggregate_checks(R, recs):
     )
 
     chk_rec(
-        exploratory,
-        "exploratory_split_idx4_p5mod8_S_eq_0",
+        theorem,
+        "cor35_split_idx4_p5mod8_S_eq_0",
         pick(index=4, eps=1, m8=5),
         lambda r: r["S"] == 0,
     )
 
     idx4_p1_rows = pick(index=4, eps=1, m8=1)
     chk_rec(
-        exploratory,
-        "exploratory_split_idx4_p1mod8_S_odd",
+        theorem,
+        "lemma31_split_idx4_p1mod8_S_odd",
         idx4_p1_rows,
         lambda r: abs(r["S"]) % 2 == 1,
     )
@@ -977,12 +1094,12 @@ def aggregate_checks(R, recs):
         "full_rank_over_A": ratio(ip == 1),
         "full_rank_split_over_A": ratio((ip == 1) & (eps5 == 1)),
         "full_rank_inert_over_A": ratio((ip == 1) & (eps5 == -1)),
-        "context_pred_full_rank_split_over_A": 9 / 19,
-        "context_pred_full_rank_inert_over_A": 10 / 19,
+        "context_pred_full_rank_split_over_A_CONDITIONAL": 9 / 19,
+        "context_pred_full_rank_inert_over_A_CONDITIONAL": 10 / 19,
         "index2_split_over_A": ratio((ip == 2) & (eps5 == 1)),
         "index2_inert_over_A": ratio((ip == 2) & (eps5 == -1)),
-        "context_pred_index2_split_over_A": 9 / 38,
-        "context_pred_index2_inert_over_A_UNTESTED": 10 / 19,
+        "context_pred_index2_split_over_A_CONJECTURAL": 9 / 38,
+        "context_pred_index2_inert_over_A_DIRICHLET_CONDITIONAL": 10 / 19,
         "index2_counts_by_p_mod_8": {
             "split": by_mod((ip == 2) & (eps5 == 1), 8),
             "inert": by_mod((ip == 2) & (eps5 == -1), 8),
@@ -1008,6 +1125,8 @@ def latex_escape(s):
         "%": r"\%",
         "&": r"\&",
         "#": r"\#",
+        "{": r"\{",
+        "}": r"\}",
     }
     for a, b in repl.items():
         s = s.replace(a, b)
@@ -1072,18 +1191,25 @@ def build_paper_table(theorem, exploratory):
         "proved-claim-check",
     )
     add(
-        "EXPLORATORY",
-        "exploratory_split_idx4_p5mod8_S_eq_0",
-        "split i_p=4, p=5 mod 8: S=0",
-        exploratory,
-        "exploratory",
+        "THEOREM",
+        "cor35_split_idx4_p5mod8_S_eq_0",
+        "split i_p=4, p=5 mod 8: S=0 (Cor. 3.5)",
+        theorem,
+        "proved-claim-check",
     )
     add(
-        "EXPLORATORY",
-        "exploratory_split_idx4_p1mod8_S_odd",
-        "split i_p=4, p=1 mod 8: S odd",
-        exploratory,
-        "exploratory",
+        "THEOREM",
+        "lemma31_split_idx4_p1mod8_S_odd",
+        "split i_p=4, p=1 mod 8: S odd (Lemma 3.1)",
+        theorem,
+        "proved-claim-check",
+    )
+    add(
+        "THEOREM",
+        "lehmer1958_quartic5_iff_5_divides_b_split",
+        "split: (5/p)_4 = 1 iff 5 | b (E. Lehmer 1958)",
+        theorem,
+        "proved-claim-check",
     )
 
     return rows
@@ -1236,11 +1362,6 @@ def _xlsx_safe_sheet_name(name, used):
 
 
 def write_xlsx_workbook(path, sheets):
-    """
-    Write a minimal .xlsx workbook using only Python standard library.
-
-    sheets: list of (sheet_name, rows), where rows is a list of row-lists.
-    """
     path = Path(path)
     used = set()
     normalized = []
@@ -1370,11 +1491,6 @@ def _checks_to_rows(checks):
 
 
 def build_xlsx_from_existing_outputs(out_dir, xlsx_path):
-    """
-    Build verification-workbook.xlsx from already-written JSON/CSV outputs.
-
-    This allows creating Excel output without recomputing the expensive run.
-    """
     out_dir = Path(out_dir)
     xlsx_path = Path(xlsx_path)
 
@@ -1384,6 +1500,20 @@ def build_xlsx_from_existing_outputs(out_dir, xlsx_path):
 
     with open(summary_path, "r", encoding="utf-8") as fh:
         summary = json.load(fh)
+
+    required = (
+        "metadata",
+        "theorem_checks",
+        "exploratory_checks",
+        "paper_table",
+        "verdict",
+    )
+    missing = [k for k in required if k not in summary]
+    if missing:
+        raise KeyError(
+            f"verification-summary.json missing keys {missing}; "
+            f"found {sorted(summary)}"
+        )
 
     metadata = summary.get("metadata", {})
     density = summary.get("density_context_not_theorem", {})
@@ -1436,7 +1566,7 @@ def build_xlsx_from_existing_outputs(out_dir, xlsx_path):
     if numerical_csv.exists():
         sheets.append(("numerical_table_csv", _read_csv_rows(numerical_csv)))
 
-    records_csv = out_dir / "ghandali-index2-records.csv"
+    records_csv = out_dir / "ghandali_index2_records.csv"
     if records_csv.exists():
         sheets.append(("records", _read_csv_rows(records_csv)))
 
@@ -1466,7 +1596,12 @@ def parse_index_set(s):
     for part in str(s).split(","):
         part = part.strip()
         if part:
-            out.add(int(part))
+            try:
+                out.add(int(part))
+            except ValueError:
+                raise SystemExit(
+                    f"--sum-indices: invalid entry {part!r}; expected comma-separated integers"
+                )
     return out
 
 
@@ -1474,11 +1609,14 @@ def parse_args(argv):
     ap = argparse.ArgumentParser(
         description="Verifier for Fibonacci character sums at rank index two."
     )
+    ap.add_argument("--version", action="version", version=f"%(prog)s {VERSION}")
+    ap.add_argument("--interactive", action="store_true", help="force interactive setup UI")
     ap.add_argument("--limit", type=int, default=100000, help="prime limit N")
     ap.add_argument("--sum-limit", type=int, default=None, help="direct S(p) limit")
     ap.add_argument("--jac-limit", type=int, default=200000, help="direct Jacobsthal limit")
     ap.add_argument("--sum-indices", type=str, default="2,4", help="indices for direct S checks")
-    ap.add_argument("--out", type=str, default="results-ghandali-index2", help="output directory")
+    ap.add_argument("--out", type=str, default=None,
+                    help=f"output directory (default: {OFFICIAL_OUT}; with --safe: {SMOKE_OUT})")
     ap.add_argument("--workers", type=int, default=0, help="rank workers; 0 means auto CPU-2")
     ap.add_argument("--rank-chunk", type=int, default=5000, help="rank checkpoint chunk size")
     ap.add_argument("--checkpoint-every", type=int, default=25, help="checkpoint interval in chunks/records")
@@ -1491,7 +1629,9 @@ def parse_args(argv):
     ap.add_argument("--xlsx-only", action="store_true", help="build verification-workbook.xlsx from existing outputs and exit")
     ap.add_argument("--fresh", action="store_true", help="discard checkpoint and start fresh")
     ap.add_argument("--resume", action="store_true", help="resume without asking if checkpoint exists")
-    ap.add_argument("--safe", action="store_true", help="tiny safe smoke test")
+    ap.add_argument("--safe", action="store_true", help=f"tiny safe smoke test (default output {SMOKE_OUT})")
+    ap.add_argument("--force-official", action="store_true",
+                    help="allow writing to the official directory for N < 2,000,000 or when it already holds a finished run")
     return ap.parse_args(argv)
 
 
@@ -1499,14 +1639,45 @@ def parse_args(argv):
 # Main
 # ============================================================
 
+def _same_dir(a, b):
+    return Path(a).resolve() == Path(b).resolve()
+
+
+def resolve_and_guard_output(args):
+    """Choose the output directory and protect the official evidence directory."""
+    if args.out is None:
+        args.out = SMOKE_OUT if args.safe else OFFICIAL_OUT
+    is_official = _same_dir(args.out, OFFICIAL_OUT)
+    if args.safe and is_official:
+        raise SystemExit(
+            "ERROR: --safe must never write to the official evidence directory "
+            f"({OFFICIAL_OUT}). Omit --out or use --out {SMOKE_OUT}."
+        )
+    if is_official and not args.xlsx_only and not args.force_official:
+        if int(args.limit) < OFFICIAL_MIN_LIMIT:
+            raise SystemExit(
+                f"ERROR: the official directory {OFFICIAL_OUT} is reserved for the full run "
+                f"(N >= {OFFICIAL_MIN_LIMIT}); got --limit {args.limit}. "
+                "Use another --out, or --force-official."
+            )
+        finished = Path(args.out) / "verification-summary.json"
+        if finished.exists():
+            raise SystemExit(
+                f"ERROR: {finished} already exists: the official directory holds a finished run. "
+                "Move or delete the whole directory before a new official run (or use --force-official)."
+            )
+    return args
+
+
 def main(argv=None):
     args = parse_args(sys.argv[1:] if argv is None else argv)
+    args = resolve_and_guard_output(args)
     
     if args.xlsx_only:
         out_dir = Path(args.out)
         xlsx_path = out_dir / "verification-workbook.xlsx"
         build_xlsx_from_existing_outputs(out_dir, xlsx_path)
-        print(f"wrote {xlsx_path}  {xlsx_path.stat().st_size} bytes  SHA-256 {sha256_file(xlsx_path)}")
+        print(f"wrote {xlsx_path}  {xlsx_path.stat().st_size} bytes  sha-256 {sha256_file(xlsx_path)}")
         return 0
 
     if args.safe:
@@ -1533,7 +1704,7 @@ def main(argv=None):
     args.checkpoint_every = max(1, int(args.checkpoint_every))
 
     if args.workers <= 0:
-        args.workers = max(1, (cpu_count() or 2) - 2)
+        args.workers = max(1, (cpu_count() or 3) - 2)
 
     sum_indices = parse_index_set(args.sum_indices)
     if args.no_sums:
@@ -1573,6 +1744,14 @@ def main(argv=None):
     log(f"{TITLE}")
     log(f"author: {AUTHOR}")
     log(f"script: ghandali_verify_index2.py {VERSION}")
+    log(f"python: {platform.python_version()}  numpy: {np.__version__}")
+    log(f"platform: {platform.platform()}")
+    try:
+        _sha = hashlib.sha256(Path(__file__).resolve().read_bytes()).hexdigest()
+    except OSError:
+        _sha = "unavailable"
+    log(f"script_sha256: {_sha}")
+    log(f"argv: {sys.argv}")
     log(f"started: {_dt.datetime.now().isoformat(timespec='seconds')}")
     log(f"limit={args.limit}  sum_limit={args.sum_limit}  jac_limit={args.jac_limit}")
     log(f"workers={args.workers}  rank_chunk={args.rank_chunk}  sum_indices={args.sum_indices}")
@@ -1772,7 +1951,7 @@ def main(argv=None):
             "checkpoint_every": args.checkpoint_every,
             "sum_indices": sorted(sum_indices),
             "sums_enabled": not args.no_sums,
-            "jacobian_enabled": not args.no_jac,
+            "jacobsthal_enabled": not args.no_jac,
             "xlsx_enabled": not args.no_xlsx,
         },
         "verdict": verdict,
@@ -1787,7 +1966,7 @@ def main(argv=None):
 
     # ---------- write outputs ----------
     rank_path = out_dir / "rank-index-all-primes.csv"
-    records_path = out_dir / "ghandali-index2-records.csv"
+    records_path = out_dir / "ghandali_index2_records.csv"
     table_csv = out_dir / "numerical-table.csv"
     table_tex = out_dir / "numerical-table.tex"
     summary_path = out_dir / "verification-summary.json"
@@ -1800,14 +1979,11 @@ def main(argv=None):
 
     with open(summary_path, "w", encoding="utf-8", newline="\n") as fh:
         json.dump(summary, fh, ensure_ascii=False, indent=2)
-        fh.flush()
-    if not args.no_xlsx:
-        build_xlsx_from_existing_outputs(out_dir, xlsx_path)
+        fh.write("\n")
 
     # Successful completion: remove checkpoint.
     clear_checkpoint(out_dir)
 
-    # ---------- log report ----------
     log("")
     log("THEOREM CHECKS")
     for name, c in theorem.items():
@@ -1835,19 +2011,14 @@ def main(argv=None):
             f"index2 split/A={density.get('index2_split_over_A', 0.0):.6f} "
             f"(context 9/38={9/38:.6f}), "
             f"index2 inert/A={density.get('index2_inert_over_A', 0.0):.6f} "
-            f"(context 10/19={10/19:.6f}, untested)"
+            f"(context 10/19={10/19:.6f}, Dirichlet-conditional)"
         )
 
     log("")
-    written_paths = [rank_path, records_path, table_csv, table_tex, summary_path]
-    if not args.no_xlsx:
-        written_paths.append(xlsx_path)
-    written_paths.append(log.path)
-
-    for pth in written_paths:
+    for pth in (rank_path, records_path, table_csv, table_tex, summary_path):
         log(
             f"wrote {pth.name:36s} "
-            f"{pth.stat().st_size:10d} bytes  SHA-256 {sha256_file(pth)}"
+            f"{pth.stat().st_size:10d} bytes  sha-256 {sha256_file(pth)}"
         )
 
     log("")
@@ -1858,12 +2029,43 @@ def main(argv=None):
     log(f"runtime seconds: {runtime:.2f}")
     log.close()
 
+    if not args.no_xlsx:
+        try:
+            build_xlsx_from_existing_outputs(out_dir, xlsx_path)
+            print(
+                f"wrote {xlsx_path.name}  {xlsx_path.stat().st_size} bytes  "
+                f"sha-256 {sha256_file(xlsx_path)}"
+            )
+        except Exception as exc:
+            print(f"WARNING: xlsx build failed (non-fatal): {exc}")
+
+    print(f"wrote {log.path.name}  sha-256 {sha256_file(log.path)}")
+
+    try:
+        shutil.copy2(Path(__file__).resolve(), out_dir / "ghandali_verify_index2.py")
+    except OSError as exc:
+        print(f"WARNING: could not copy verifier into output directory: {exc}")
+
+    try:
+        man = write_manifest(out_dir)
+        print(f"wrote manifest {man}  sha-256 {sha256_file(man)}")
+    except OSError as exc:
+        print(f"WARNING: could not write sha256sums.txt: {exc}")
+
     return 0 if theorem_mismatch_total == 0 else 1
 
 
 if __name__ == "__main__":
     freeze_support()
-    argv_rest = sys.argv[1:]
-    if not argv_rest or argv_rest == ["--interactive"]:
+    argv_rest = [a for a in sys.argv[1:] if a != "--interactive"]
+    want_ui = (
+        (not argv_rest)
+        or ("--interactive" in sys.argv[1:])
+    )
+    if want_ui and sys.stdin.isatty():
         sys.argv = [sys.argv[0]] + interactive_setup_argv()
+    elif want_ui and not sys.stdin.isatty():
+        sys.argv = [sys.argv[0]] + argv_rest
+    else:
+        sys.argv = [sys.argv[0]] + argv_rest
     raise SystemExit(main())

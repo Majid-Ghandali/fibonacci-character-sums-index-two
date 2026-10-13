@@ -1,0 +1,57 @@
+Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums
+author: Majid Ghandali
+script: ghandali_verify_index2.py 1.0.2
+python: 3.12.7  numpy: 1.26.4
+platform: Windows-11-10.0.26200-SP0
+script_sha256: 7a74db81653b6f4fe5167d7f9d8639e9da2ad92d6cc58d1368f4047abaa9ef96
+argv: ['code\\ghandali_verify_index2.py', '--limit', '2000000', '--sum-limit', '2000000', '--jac-limit', '2000000', '--workers', '14', '--sum-indices', '2,4', '--out', 'results\\ghandali_index2_v1.0.2', '--fresh']
+started: 2026-10-13T03:15:36
+limit=2000000  sum_limit=2000000  jac_limit=2000000
+workers=14  rank_chunk=5000  sum_indices=2,4
+checkpoint_status=fresh-requested
+building prime sieve...
+primes for rank inventory: 148931
+computing ranks and indices...
+rank rows: 148931
+direct S records selected: 52477
+computing direct S(p) records...
+
+THEOREM CHECKS
+  rank_index_integrality_z_times_i_eq_n                             tested= 148931 mismatch=   0
+  index_parity_i_even_iff_p_1mod4                                   tested= 148931 mismatch=   0
+  odd_z_chi_F_z_plus_1_eq_2_over_p                                  tested=  49618 mismatch=   0
+  quartic_5_eq_minus_delta_times_2_over_p_split_idx2                tested=  13134 mismatch=   0
+  reflection_odd_z_p1mod4_and_S_eq_2overp_times_S                   tested=  35984 mismatch=   0
+  reflection_odd_z_p5mod8_S_eq_0                                    tested=  21393 mismatch=   0
+  thmA_split_idx2_p1mod8_S_eq_delta_astar                           tested=   6551 mismatch=   0
+  thmA_split_idx2_p5mod8_S_eq_minus_delta                           tested=   6583 mismatch=   0
+  jacobsthal_Jm1_eq_minus_2_times_2overp_times_astar_idx2_p1mod4    tested=  42421 mismatch=   0
+  split_reduction_p1mod8_S_eq_quartic5_half_Jm1                     tested=   6551 mismatch=   0
+  split_reduction_p5mod8_S_eq_minus_quartic5                        tested=   6583 mismatch=   0
+  thmB_inert_idx2_p1mod8_abs_S_eq_b                                 tested=  14591 mismatch=   0
+  thmB_inert_idx2_p1mod8_2S_eq_J5                                   tested=  14591 mismatch=   0
+  thmB_inert_idx2_p1mod8_J5_eq_Jm5                                  tested=  14591 mismatch=   0
+  thmB_inert_idx2_p5mod8_S_eq_0                                     tested=  14696 mismatch=   0
+  thmB_inert_idx2_p1mod8_sign_rule_mod5                             tested=  14591 mismatch=   0
+  lehmer1958_quartic5_iff_5_divides_b_split                         tested=  23190 mismatch=   0
+  cor35_split_idx4_p5mod8_S_eq_0                                    tested=   6697 mismatch=   0
+  lemma31_split_idx4_p1mod8_S_odd                                   tested=   3359 mismatch=   0
+
+EXPLORATORY CHECKS
+  exploratory_inert_idx2_p1mod8_J10_eq_quartic2_J5                  tested=  14591 mismatch=   0
+  exploratory_inert_idx2_p1mod8_abs_Jpm10_eq_2absS                  tested=  14591 mismatch=   0
+  exploratory_split_idx4_p1mod8_max_absS_over_sqrtp                 value=0.502683773697118
+
+density context: index2 split/A=0.235826 (context 9/38=0.236842), index2 inert/A=0.525859 (context 10/19=0.526316, Dirichlet-conditional)
+
+wrote rank-index-all-primes.csv               3217567 bytes  sha-256 CFAD1D6F7BF8A961E14AE9B76CB922B283016F7B60BEFD7203B039BC07D01D30
+wrote ghandali_index2_records.csv             4159534 bytes  sha-256 D1E6D4D337182B51F68F6D7E8D63AAA1853D0A22E8AA70F823551398EB008242
+wrote numerical-table.csv                        1113 bytes  sha-256 3E8B1C39E6DA0A6580BC5338EDD645F51365FE7020494718B82020820BD61A90
+wrote numerical-table.tex                         795 bytes  sha-256 D50A236C73391FB65852367CC63AA2FA927AB1FB5E43BA41E6637443014940DC
+wrote verification-summary.json                  7814 bytes  sha-256 3A5C12B020A2B258319AB60710B706714F8E90D5D03AED5E29F53292A304AAD4
+
+checkpoint cleared after successful completion
+VERDICT: PASS
+theorem mismatches: 0
+exploratory mismatches: 0
+runtime seconds: 5036.39

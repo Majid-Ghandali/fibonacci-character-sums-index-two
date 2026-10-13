@@ -8,11 +8,11 @@
       "orcid": "0009-0001-1097-1770"
     }
   ],
-  "description": "Public reproducibility verifier and machine-readable output files for the manuscript \"Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums\". The verifier checks finite-range evidence for rank-index-two Fibonacci character-sum identities and their reductions to Jacobsthal sums, separating theorem-level checks from exploratory checks and density context.",
+  "description": "Public reproducibility verifier and machine-readable output files for the manuscript \"Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums\". Version 1.0.2: theorem/exploratory separation, signed inert law at theorem level, sha256sums.txt written after the final log close and covering the stored verifier copy. Official evidence path: results/ghandali_index2_v1.0.2/ (full run N=2,000,000, 2026-10-13, all theorem-level checks with zero mismatches). Mathematics unchanged; full-run evidence regenerated under this version label.",
   "access_right": "open",
   "license": "mit",
-  "version": "1.0.1",
-  "publication_date": "2026-10-09",
+  "version": "1.0.2",
+  "publication_date": "2026-10-13",
   "keywords": [
     "Fibonacci numbers",
     "character sums",
@@ -32,6 +32,12 @@
       "relation": "isSupplementTo",
       "scheme": "doi",
       "resource_type": "publication-preprint"
+    },
+    {
+      "identifier": "https://github.com/Majid-Ghandali/fibonacci-character-sums-index-two",
+      "relation": "isSupplementTo",
+      "scheme": "url",
+      "resource_type": "software"
     }
   ]
 }

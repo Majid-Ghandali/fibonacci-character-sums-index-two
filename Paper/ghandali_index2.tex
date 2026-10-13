@@ -406,6 +406,24 @@ with $a^{*}\in\{\pm a\}$ determined by $a^{*}\equiv1\pmod4$. Then
 This is the final assertion of Lemma~\ref{lem:jac-cong}.
 \end{proof}
 
+\begin{remark}[Uniform evaluation of $\Jac(-1)$]\label{rem:jac-m1-uniform}
+Lemma~\ref{lem:Jminus1} records the classical evaluation for the branch
+$p\equiv1\pmod8$. The same ingredients yield a uniform formula for every
+$p\equiv1\pmod4$:
+\[
+  \Jac(-1)=-2\left(\frac2p\right)a^{*}.
+\]
+Indeed, Lemma~\ref{lem:jac-cong} gives
+$\tfrac12\Jac(-1)\equiv -a^{*}(-1)^{(p-1)/4}\pmod p$, while
+Lemma~\ref{lem:jacobsthal} identifies $\tfrac12\Jac(-1)$ with the odd
+component $\pm a^{*}$ of $p=a^2+b^2$. The congruence selects the sign in
+both residue classes modulo~$8$. When $p\equiv1\pmod8$ one has
+$\leg2p=1$, recovering $\Jac(-1)=-2a^{*}$; when $p\equiv5\pmod8$ one has
+$\leg2p=-1$ and $\Jac(-1)=2a^{*}$. The companion verifier checks the
+uniform identity on all index-two records with $p\equiv1\pmod4$ in the
+archived range (zero mismatches).
+\end{remark}
+
 % =====================================================================
 \section{Structural lemmas}\label{sec:struct}
 % =====================================================================
@@ -606,9 +624,12 @@ $\chi(\varphi^{-j})=\chi(\varphi^{j})=\chi(\iota)^j\chi(y_j)$. Therefore
   \chi(F_j)=\qleg5p\,\leg2p^{j} f(y_j),\qquad f(y):=\chi(y)\chi(y^2-1).
 \]
 
-\emph{Step 2.} Since $g^2=\eta$ has order $(p-1)/2$ and this order is even,
-$g$ has order $p-1$. Indeed, if $g$ had order $(p-1)/2$, then $g^2$ would
-have order $(p-1)/4$, a contradiction. Thus $g$ is a primitive root.
+\emph{Step 2.} Let $d=\operatorname{ord}_p(g)$. The identity
+$\operatorname{ord}_p(g^2)=d/\gcd(d,2)$, together with
+$\operatorname{ord}_p(g^2)=(p-1)/2$, shows $d\mid p-1$ and
+$d\in\{(p-1)/2,\;p-1\}$. If $d=(p-1)/2$, then --- since $(p-1)/2$ is even
+--- $\operatorname{ord}_p(g^2)=d/2=(p-1)/4\neq(p-1)/2$, a contradiction.
+Hence $d=p-1$, so $g$ is a primitive root.
 Consequently $\{y_j:1\le j\le z\}$ is a half-system of $\mathbb F_p^\times$
 modulo $\pm1$, because $g^{j+z}=-g^j$. Also $f$ is even, since $\chi(-1)=1$.
 
@@ -683,8 +704,9 @@ split primes with $i_p=2$,
 \[
   5\mid b\quad\Longleftrightarrow\quad p\equiv9\text{ or }21\pmod{40}.
 \]
-The equivalence has been verified for all such primes below $6\cdot10^4$
-($550$ primes).
+The equivalence has been verified by the companion verifier on every split
+record of the archived run below $2\cdot10^{6}$ ($23{,}190$ primes with
+$i_p\in\{2,4\}$), in particular on all $13{,}134$ split primes with $i_p=2$.
 \end{remark}
 
 \begin{remark}[Parity consistency]
@@ -1145,7 +1167,7 @@ $\qleg2p$.
 % =====================================================================
 
 The companion verifier \texttt{ghandali\_verify\_index2.py}
-(version~1.0.1), archived with its machine-readable outputs and run log
+(version~1.0.2), archived with its machine-readable outputs and run log
 in~\cite{ghandaliIndex2Archive}, was run with
 \[
   N=2\cdot 10^{6},
@@ -1183,8 +1205,8 @@ split, \(i_p=4\), \(p\equiv5\pmod8\)
   & \(S=0\)
   & 6697 & 6697/6697 & Cor.~\ref{cor:vanishing}\\
 split, \(i_p=4\), \(p\equiv1\pmod8\)
-  & open; \(S\) odd
-  & 3359 & --- & ---\\
+  & \(S\) odd; exact value open
+  & 3359 & 3359/3359 & Lem.~\ref{lem:parity}\\
 \bottomrule
 \end{tabular}
 \end{center}
@@ -1210,7 +1232,7 @@ mismatches.
 
 Claims of zero mismatches refer to the archived run deposited
 in~\cite{ghandaliIndex2Archive}, which contains the verifier source code
-(version~1.0.1), machine-readable CSV and JSON output files, the run log
+(version~1.0.2), machine-readable CSV and JSON output files, the run log
 with the parameters recorded above, and checksums.  The present paper
 records only the mathematical summary of these computations.
 
@@ -1475,9 +1497,10 @@ directly from Chen's Theorem~2.1 \cite{Chen2002}, applied to
 The element $\eta$ is nontorsion with $N_{K/\mathbb Q}(\eta)=1$ and
 is not a proper power in $K^\times$: it is negative under both real
 embeddings of $K$, so it has no square root in the real field $K$;
-and an equality $\eta=(\pm\varphi^m)^q$ with $q$ an odd prime would
-force $mq=2$, which is impossible. Hence the exponent $s$ in Chen's
-notation equals $1$.
+any $\beta$ with $\beta^q=\eta$ is a unit of $K$, hence of the form
+$\pm\varphi^m$; and an equality $\eta=(\pm\varphi^m)^q$ with $q$ an odd
+prime would force $mq=2$, which is impossible. Hence the exponent $s$ in
+Chen's notation equals $1$.
 
 For square-free $n$, Chen's field $k_n$ equals $K$ if $n$ is odd and
 $K(\sqrt\eta)=K(i)$ if $n$ is even. Consequently the intersection
@@ -1492,7 +1515,10 @@ degree
 \]
 because $K=\mathbb Q(\sqrt5)$ is contained in $\mathbb Q(\mu_n)$
 exactly when $5\mid n$, while a square-free $n$ is never divisible
-by $4$, so $\mathbb Q(\mu_n)$ cannot contain $i$. Chen's
+by $4$, so $\mathbb Q(\mu_n)$ cannot contain $i$. Equivalently, the
+quadratic subfields of $K(i)$ are $\mathbb Q(\sqrt5)$, $\mathbb Q(i)$,
+and $\mathbb Q(\sqrt{-5})$, of conductors $5$, $4$, and $20$, and only
+$5$ can divide a square-free $n$. Chen's
 Lemma~1.6 \cite{Chen2002} therefore gives the Kummer degrees
 \[
 d_n=[E_n:\mathbb Q]=
@@ -1713,39 +1739,31 @@ paper depends on an unpublished manuscript.
 \begin{remark}[Signed inert two-square law]
 The sign in the inert case \(i_p=2\), \(p\equiv1\pmod8\) is not an
 open refinement: Theorem~\ref{thm:B} determines it by the congruence
-\(S(p)\equiv-a^{*}\pmod5\).  The companion verifier (\texttt{ghandali\_verify\_index2.py}, version~1.0.1) checks this signed
+\(S(p)\equiv-a^{*}\pmod5\).  The companion verifier (\texttt{ghandali\_verify\_index2.py}, version~1.0.2) checks this signed
 law directly (zero mismatches on all \(14{,}591\) eligible primes below
 \(2\cdot10^{6}\)).
 \end{remark}
 
-\begin{problem}[Index four]\label{prob:index-four}
-For split primes with \(i_p=4\), the branch \(p\equiv5\pmod8\) is
-explained by the reflection vanishing mechanism: in the computation up
-to \(2\cdot10^{6}\), the identity
+\begin{remark}[Index four: vanishing and parity]\label{rem:index-four}
+For split primes with \(i_p=4\) and \(p\equiv5\pmod8\), Corollary~\ref{cor:vanishing}(b)
+gives \(S(p)=0\) (reflection vanishing). For the complementary split branch
+\(p\equiv1\pmod8\), the exact value of \(S(p)\) remains open, but its parity is
+settled: here \(z(p)=(p-1)/4\) is even, so Lemma~\ref{lem:parity} yields
 \[
-  S(p)=0
+  S(p)\equiv z(p)-1\equiv1\pmod2.
 \]
-held with zero mismatches on \(6697\) such primes.
-
-The remaining split branch \(p\equiv1\pmod8\) appears to contain new
-structure.  In the same range, \(S(p)\) was odd for all \(3359\) tested
-primes, and the maximum observed value of
-\[
-  \frac{|S(p)|}{\sqrt p}
-\]
-was
-\[
-  0.502683773697118.
-\]
-A natural next step is to seek an analogue of
-Proposition~\ref{prop:split-red} involving quartic Jacobsthal sums or
-Jacobi sums.
-\end{problem}
+Thus \(S(p)\) is odd for every such prime. In the archived computation up to
+\(2\cdot10^{6}\) this oddness held with zero mismatches on \(3359\) primes, and
+the observed ratio \(\lvert S(p)\rvert/\sqrt p\) stayed below \(0.503\). A natural
+next step is an analogue of Proposition~\ref{prop:split-red} involving
+quartic Jacobsthal or Jacobi sums that would determine the exact value.
+\end{remark}
 
 \begin{problem}[Index three]\label{prob:index-three}
-Preliminary computations suggest that split primes of rank index three
-may be governed by cubic character sums. Establishing a precise analogue
-of the index-two Jacobsthal reduction remains open.
+For rank index three, a precise analogue of the index-two reduction to
+Jacobsthal sums is not known. A natural hypothesis is that the governing
+objects are cubic character sums (or cubic Jacobi sums), but no such
+identity is claimed or archived in the present paper.
 \end{problem}
 
 
@@ -1780,10 +1798,15 @@ should admit a uniform description through finite-field character sums.
 % =====================================================================
 \noindent
 No external funding was received for this work.  The author declares no
-competing interests.  Computational verification was performed with the
-companion verifier; the versioned source code, machine-readable output
-files, and run log are available in the reproducibility
-archive~\cite{ghandaliIndex2Archive}.
+competing interests.
+
+\paragraph{Data availability.}
+The companion verifier \texttt{ghandali\_verify\_index2.py} (version~1.0.2),
+machine-readable outputs, run log, and checksum manifest are available in the
+reproducibility archive~\cite{ghandaliIndex2Archive}
+(\href{https://doi.org/10.5281/zenodo.23263041}{DOI: 10.5281/zenodo.23263041})
+
+
 
 \bibliographystyle{abbrvnat}
 \bibliography{ghandali_index2}
