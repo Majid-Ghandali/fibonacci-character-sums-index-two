@@ -3,7 +3,7 @@ gate_official.py -- post-run acceptance gate for an official verifier run.
 
 Usage (from the repository root):
   python code/gate_official.py --dir results/ghandali_index2_v1.0.2 \
-      --ref results/release-v1.0.1/verification-summary.json \
+      --ref results/ghandali_index2/verification-summary.json \
       --script code/ghandali_verify_index2.py
 
 Exit code 0 = every gate passed, 1 = at least one gate failed.

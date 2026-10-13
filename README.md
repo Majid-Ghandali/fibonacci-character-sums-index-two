@@ -26,9 +26,15 @@ Reproducibility materials for the preprint:
 | --- | --- | --- |
 | Manuscript preprint | Theorems, proofs | [10.5281/zenodo.23264456](https://doi.org/10.5281/zenodo.23264456) |
 | Software archive | Verifier + machine-readable evidence | [10.5281/zenodo.23263041](https://doi.org/10.5281/zenodo.23263041) |
+| Manuscript v1.0.2 | Version-specific preprint | [10.5281/zenodo.23339521](https://doi.org/10.5281/zenodo.23339521) |
+| Software v1.0.2 | Version-specific archive | [10.5281/zenodo.23337437](https://doi.org/10.5281/zenodo.23337437) |
 
-Software record is maintained **manually** on Zenodo (New version per release).
-A new Zenodo software version will be created manually from Git tag `v1.0.2` after the GitHub release source is finalized.
+The software archive v1.0.2 is published on Zenodo. Use the concept DOI for the evolving archive and the version DOI for this specific release:
+- Software concept DOI: [10.5281/zenodo.23263041](https://doi.org/10.5281/zenodo.23263041)
+- Software v1.0.2 version DOI: [10.5281/zenodo.23337437](https://doi.org/10.5281/zenodo.23337437)
+- Manuscript v1.0.2 version DOI: [10.5281/zenodo.23339521](https://doi.org/10.5281/zenodo.23339521)
+
+The v1.0.2 software archive corresponds to Git tag `v1.0.2`. Historical evidence directories are retained for provenance.
 
 - Software metadata: [`CITATION.cff`](CITATION.cff), [`.zenodo.json`](.zenodo.json)
 - Manuscript metadata: [`Paper/CITATION.cff`](Paper/CITATION.cff)
