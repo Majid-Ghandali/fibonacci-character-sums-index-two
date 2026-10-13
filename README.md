@@ -83,7 +83,7 @@ python code\ghandali_verify_index2.py --safe --fresh
 | 1.0.1 | `results/release-v1.0.1/` and `results/ghandali_index2/` | Historical, do not overwrite. Provenance: `release-v1.0.1` was produced by script 1.0.0 (see its log/summary); `ghandali_index2` is a later 1.0.1 rerun. See `CHANGELOG.md`. |
 | **1.0.2** | `results/ghandali_index2_v1.0.2/` | **Official evidence.** Full run $N=2\cdot10^6$ completed 2026-10-13 (5036 s, Python 3.12.7, numpy 1.26.4); acceptance gate 53/53 passed. |
 
-Do **not** rewrite 1.0.1 evidence. Mathematics of Theorems A and B is unchanged; 1.0.2 regenerates evidence under clean provenance (log version, theorem labels, `SHA256SUMS.txt` written after the final log close).
+Do **not** rewrite 1.0.1 evidence. Mathematics of Theorems A and B is unchanged; 1.0.2 regenerates evidence under clean provenance (log version, theorem labels, `sha256sums.txt` written after the final log close).
 
 ### Full verification command (official 1.0.2)
 
@@ -103,8 +103,8 @@ Gate after completion:
 1. Log line: `script: ghandali_verify_index2.py 1.0.2`
 2. `VERDICT: PASS`, `theorem_mismatch_total = 0`
 3. Byte-match of `tested` counts against the 1.0.1 full-run summary for shared theorem keys (mathematics unchanged)
-4. `SHA256SUMS.txt` validates (it also covers the copy of the verifier stored in the directory):
-   `cd results/ghandali_index2_v1.0.2 && sha256sum -c SHA256SUMS.txt`
+4. `sha256sums.txt` validates (it also covers the copy of the verifier stored in the directory):
+   `cd results/ghandali_index2_v1.0.2 && sha256sum -c sha256sums.txt`
 
 All four gates (and more) are automated:
 

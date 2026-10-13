@@ -23,7 +23,7 @@ abstract: >-
   manuscript Fibonacci Character Sums at Rank Index Two and Jacobsthal Sums.
   Version 1.0.2 regenerates finite-range evidence under a clean provenance
   label (theorem/exploratory separation, signed inert law as theorem-level,
-  SHA256SUMS.txt written after the final log close). Mathematics of Theorems A
+  sha256sums.txt written after the final log close). Mathematics of Theorems A
   and B is unchanged from the manuscript proofs. Official evidence directory
   (full run N=2,000,000, 2026-10-13): results/ghandali_index2_v1.0.2/. The
   Zenodo DOI below identifies the software archive. A new Zenodo version will be created manually from Git tag v1.0.2 after GitHub release finalization.
